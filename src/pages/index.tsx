@@ -17,65 +17,65 @@ import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
 const filterableDistricts: any = {
-  1: 2819,
-  2: 2297,
-  3: 3301,
-  4: 2532,
-  5: 3857,
-  6: 1684,
-  7: 607,
-  8: 1184,
-  9: 828,
-  10: 3697,
-  11: 2700,
-  12: 1492,
-  13: 5246,
-  14: 5819,
-  15: 1016,
+  1: 4127,
+  2: 3123,
+  3: 4616,
+  4: 3248,
+  5: 4474,
+  6: 2255,
+  7: 641,
+  8: 1508,
+  9: 1930,
+  10: 4507,
+  11: 3373,
+  12: 1373,
+  13: 6445,
+  14: 6798,
+  15: 1323,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
 
 const filterableCategories: any = {
-  "At-Fault": 39631,
-  "No-Fault": 46,
+  "At-Fault": 49925,
+  "No-Fault": 75,
 };
 
 const filterableCategoriesKeys = Object.keys(filterableCategories);
 
 const filterableNotices: any = {
-  "3 Day": 37082,
-  "10 Day": 459,
-  "15 Day": 1,
-  "30 Day": 2017,
-  "60 Day": 97,
-  "90 Day": 16,
-  "120 Day": 5,
+  "3 Day": 45547,
+  "10 Day": 624,
+  "15 Day": 11,
+  "30 Day": 3648,
+  "60 Day": 146,
+  "90 Day": 17,
+  "120 Day": 7,
 };
 
 const filterableNoticesKeys = Object.keys(filterableNotices);
 
 const filterableZipCodes: any = {
-  90028: 2923,
-  90036: 2228,
-  90015: 1635,
-  90014: 1281,
-  90012: 1272,
-  91367: 1265,
-  90005: 1178,
-  90017: 1033,
-  91601: 1023,
-  90020: 965,
-  90013: 903,
-  90004: 850,
-  90057: 759,
-  91303: 747,
-  90046: 715,
-  90006: 703,
-  90045: 532,
-  90038: 523,
-  91325: 517,
-  91335: 504,
+  90028: 3585,
+  90036: 2458,
+  91367: 2099,
+  90017: 2076,
+  90014: 1590,
+  90012: 1572,
+  90005: 1545,
+  90015: 1447,
+  91601: 1398,
+  90020: 1284,
+  90007: 1209,
+  90004: 1120,
+  90013: 1049,
+  90057: 1001,
+  91303: 844,
+  90046: 843,
+  90045: 767,
+  91406: 639,
+  91335: 624,
+  90038: 595,
 };
 
 const filterableZipCodeKeys = Object.keys(filterableZipCodes);
@@ -112,7 +112,7 @@ const Home: NextPage = () => {
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "Evictions_07-31-23";
+  var mapname = "Evictions_aug23";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
@@ -221,10 +221,10 @@ const Home: NextPage = () => {
       levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
     }
 
-    var layer = mapref.current.getLayer("evictions");
+    var layer = mapref.current.getLayer("evictions-feb-aug-2023");
 
     if (layer) {
-      mapref.current.setPaintProperty("evictions", "heatmap-intensity", levels);
+      mapref.current.setPaintProperty("evictions-feb-aug-2023", "heatmap-intensity", levels);
     }
   };
 
@@ -461,7 +461,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "evictions", (e: any) => {
+      map.on("mouseover", "evictions-feb-aug-2023", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -488,69 +488,69 @@ const Home: NextPage = () => {
           if (filteredfeatures.length > 0) {
             if (filteredfeatures[0]) {
               if (filteredfeatures[0].properties) {
-                if (filteredfeatures[0].properties["address"]) {
-                  const areaPC = filteredfeatures[0].properties["address"];
+                if (filteredfeatures[0].properties["Address"]) {
+                  const areaPC = filteredfeatures[0].properties["Address"];
 
                   const allthelineitems = filteredfeatures.map(
                     (eachCase: any) => {
-                      if (eachCase.properties?.["eviction_category"]) {
+                      if (eachCase.properties?.["Category"]) {
                         return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
-                          eachCase.properties["eviction_category"]
+                          eachCase.properties["Category"]
                         }
                         <br />
                         ${
-                          eachCase.properties?.["notice_date"]
-                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["notice_date"]}</span>`
+                          eachCase.properties?.["Notice Date"]
+                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["Notice Date"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["notice_type"]
-                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["notice_type"]}</span>`
+                          eachCase.properties?.["Notice Type"]
+                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["Notice Type"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["just_cause"] &&
-                          eachCase.properties["just_cause"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["just_cause"]}</span> `
+                          eachCase.properties?.["Just Cause"] &&
+                          eachCase.properties["Just Cause"] != "UNKNOWN"
+                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Just Cause"]}</span> `
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["cd"]
-                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["cd"]} </span>`
+                          eachCase.properties?.["CD#"]
+                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["CD#"]} </span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["address"]
-                            ? `<span class="text-teal-400">Address: ${eachCase.properties["address"]}, </span>`
+                          eachCase.properties?.["Address"]
+                            ? `<span class="text-teal-400">Address: ${eachCase.properties["Address"]}, </span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["city"]
-                            ? `<span class="text-teal-400">City: ${eachCase.properties["city"]}</span> `
+                          eachCase.properties?.["City"]
+                            ? `<span class="text-teal-400">City: ${eachCase.properties["City"]}</span> `
                             : ""
                         }
                         ${" "}
                         ${
-                          eachCase.properties?.["zip_code"]
-                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["zip_code"]}</span>`
+                          eachCase.properties?.["Zip Code"]
+                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["Zip Code"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["bedroom_count"]
-                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["bedroom_count"]}</span> `
+                          eachCase.properties?.["Bedroom Count"]
+                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["Bedroom Count"]}</span> `
                             : "Bedroom Count: n/a"
                         }
                         <br />
                         ${
-                          eachCase.properties?.["rent_owed_currency"] &&
-                          eachCase.properties["rent_owed_currency"] != "UNKNOWN"
-                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
+                          eachCase.properties?.["Rent Owed"] &&
+                          eachCase.properties["Rent Owed"] != "UNKNOWN"
+                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["Rent Owed"]}</span> `
                             : ""
                         }
                   </li>`;
@@ -598,7 +598,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "evictions", () => {
+      map.on("mouseleave", "evictions-feb-aug-2023", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -617,14 +617,14 @@ const Home: NextPage = () => {
         },
       });
 
-      map.on("mouseleave", "evictions-zipcodes", () => {
+      map.on("mouseleave", "eviction-feb-aug-2023-zipcodes", () => {
         if (urlParams.get("stopmouseleave") === null) {
           map.getCanvas().style.cursor = "";
           popup.remove();
         }
       });
 
-      map.on("mouseover", "evictions-zipcodes", (e: any) => {
+      map.on("mouseover", "eviction-feb-aug-2023-zipcodes", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -651,69 +651,69 @@ const Home: NextPage = () => {
           if (filteredfeatures.length > 0) {
             if (filteredfeatures[0]) {
               if (filteredfeatures[0].properties) {
-                if (filteredfeatures[0].properties["address"]) {
-                  const areaPC = filteredfeatures[0].properties["address"];
+                if (filteredfeatures[0].properties["Address"]) {
+                  const areaPC = filteredfeatures[0].properties["Address"];
 
                   const allthelineitems = filteredfeatures.map(
                     (eachCase: any) => {
-                      if (eachCase.properties?.["eviction_category"]) {
+                      if (eachCase.properties?.["Category"]) {
                         return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
-                          eachCase.properties["eviction_category"]
+                          eachCase.properties["Category"]
                         }
                         <br />
                         ${
-                          eachCase.properties?.["notice_date"]
-                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["notice_date"]}</span>`
+                          eachCase.properties?.["Notice Date"]
+                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["Notice Date"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["notice_type"]
-                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["notice_type"]}</span>`
+                          eachCase.properties?.["Notice Type"]
+                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["Notice Type"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["just_cause"] &&
-                          eachCase.properties["just_cause"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["just_cause"]}</span> `
+                          eachCase.properties?.["Just Cause"] &&
+                          eachCase.properties["Just Cause"] != "UNKNOWN"
+                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Just Cause"]}</span> `
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["cd"]
-                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["cd"]} </span>`
+                          eachCase.properties?.["CD#"]
+                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["CD#"]} </span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["address"]
-                            ? `<span class="text-teal-400">Address: ${eachCase.properties["address"]}, </span>`
+                          eachCase.properties?.["Address"]
+                            ? `<span class="text-teal-400">Address: ${eachCase.properties["Address"]}, </span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["city"]
-                            ? `<span class="text-teal-400">City: ${eachCase.properties["city"]}</span> `
+                          eachCase.properties?.["City"]
+                            ? `<span class="text-teal-400">City: ${eachCase.properties["City"]}</span> `
                             : ""
                         }
                         ${" "}
                         ${
-                          eachCase.properties?.["zip_code"]
-                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["zip_code"]}</span>`
+                          eachCase.properties?.["Zip Code"]
+                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["Zip Code"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["bedroom_count"]
-                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["bedroom_count"]}</span> `
+                          eachCase.properties?.["Bedroom Count"]
+                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["Bedroom Count"]}</span> `
                             : "Bedroom Count: n/a"
                         }
                         <br />
                         ${
-                          eachCase.properties?.["rent_owed_currency"] &&
-                          eachCase.properties["rent_owed_currency"] != "UNKNOWN"
-                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
+                          eachCase.properties?.["Rent Owed"] &&
+                          eachCase.properties["Rent Owed"] != "UNKNOWN"
+                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["Rent Owed"]}</span> `
                             : ""
                         }
                   </li>`;
@@ -791,24 +791,23 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "evictions", (e: any) => {
+      map.on("mousedown", "evictions-feb-aug-2023", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
         console.log(e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
-            address: obj.properties["address"],
-            cd: obj.properties["cd"],
-            evictionCategory: obj.properties["eviction_category"],
-            date: obj.properties["notice_date"],
-            city: obj.properties.city,
-            zip: obj.properties["zip_code"],
-            monthlyRent: obj.properties["current_monthly_rent"],
-            rentOwed: obj.properties["rent_owed_currency"],
-            bedroom: obj.properties["bedroom_count"],
-            noticeType: obj.properties["notice_type"],
-            justCause: obj.properties["just_cause"],
+            address: obj.properties["Address"],
+            cd: obj.properties["CD#"],
+            evictionCategory: obj.properties["Category"],
+            date: obj.properties["Notice Date"],
+            city: obj.properties.City,
+            zip: obj.properties["Zip Code"],
+            rentOwed: obj.properties["Rent Owed"],
+            bedroom: obj.properties["Bedroom Count"],
+            noticeType: obj.properties["Notice Type"],
+            justCause: obj.properties["Just Cause"],
           };
         });
 
@@ -826,24 +825,23 @@ const Home: NextPage = () => {
         setEvictionData(filteredData);
       });
 
-      map.on("mousedown", "evictions-zipcodes", (e: any) => {
+      map.on("mousedown", "eviction-feb-aug-2023-zipcodes", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
         console.log(e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
-            address: obj.properties["address"],
-            cd: obj.properties["cd"],
-            evictionCategory: obj.properties["eviction_category"],
-            date: obj.properties["notice_date"],
-            city: obj.properties.city,
-            zip: obj.properties["zip_code"],
-            monthlyRent: obj.properties["current_monthly_rent"],
-            rentOwed: obj.properties["rent_owed_currency"],
-            bedroom: obj.properties["bedroom_count"],
-            noticeType: obj.properties["notice_type"],
-            justCause: obj.properties["just_cause"],
+            address: obj.properties["Address"],
+            cd: obj.properties["CD#"],
+            evictionCategory: obj.properties["Category"],
+            date: obj.properties["Notice Date"],
+            city: obj.properties.City,
+            zip: obj.properties["Zip Code"],
+            rentOwed: obj.properties["Rent Owed"],
+            bedroom: obj.properties["Bedroom Count"],
+            noticeType: obj.properties["Notice Type"],
+            justCause: obj.properties["Just Cause"],
           };
         });
 
@@ -1014,7 +1012,7 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "cd"],
+      ["get", "CD#"],
       filteredDistricts,
       true,
       false,
@@ -1022,7 +1020,7 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "eviction_category"],
+      ["get", "Category"],
       filteredCategories.map((category) => String(category)),
       true,
       false,
@@ -1030,7 +1028,7 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "notice_type"],
+      ["get", "Notice Type"],
       filteredNotices.map((noticeType) => String(noticeType)),
       true,
       false,
@@ -1043,7 +1041,7 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions", filterinput);
+          mapref.current.setFilter("evictions-feb-aug-2023", filterinput);
         }
       }
     }
@@ -1054,7 +1052,7 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "zip_code"],
+      ["get", "Zip Code"],
       filteredZipCodes,
       true,
       false,
@@ -1069,7 +1067,7 @@ const Home: NextPage = () => {
         console.log(filterinput);
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions-zipcodes", filterinput);
+          mapref.current.setFilter("eviction-feb-aug-2023-zipcodes", filterinput);
         }
       }
     }
