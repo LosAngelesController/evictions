@@ -224,7 +224,11 @@ const Home: NextPage = () => {
     var layer = mapref.current.getLayer("evictions-feb-aug-2023");
 
     if (layer) {
-      mapref.current.setPaintProperty("evictions-feb-aug-2023", "heatmap-intensity", levels);
+      mapref.current.setPaintProperty(
+        "evictions-feb-aug-2023",
+        "heatmap-intensity",
+        levels
+      );
     }
   };
 
@@ -1067,7 +1071,10 @@ const Home: NextPage = () => {
         console.log(filterinput);
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("eviction-feb-aug-2023-zipcodes", filterinput);
+          mapref.current.setFilter(
+            "eviction-feb-aug-2023-zipcodes",
+            filterinput
+          );
         }
       }
     }
