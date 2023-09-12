@@ -115,7 +115,7 @@ function Nav() {
           <Disclosure.Panel className="md:hidden">
             <div className="space-y-1 px-2 pt-0 pb-3">
               <p className="text-[#41ffca] font-medium text-base pt-0 pb-1 px-3 block">
-                Eviction Notices Feb - Jul 2023
+                Eviction Notices Feb - Aug 2023
               </p>
               {navarraycurrent().map((item: newiteminterface) => (
                 <Disclosure.Button

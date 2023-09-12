@@ -123,7 +123,7 @@ const Home: NextPage = () => {
   };
 
   const setFilteredCategoriesPre = (input: string[]) => {
-    console.log("inputvalidator", input);
+    // console.log("inputvalidator", input);
     if (input.length === 0) {
       setFilteredCategories(["99999"]);
     } else {
@@ -132,7 +132,7 @@ const Home: NextPage = () => {
   };
 
   const setFilteredNoticesPre = (input: string[]) => {
-    console.log("inputvalidator", input);
+    // console.log("inputvalidator", input);
     if (input.length === 0) {
       setFilteredNotices(["99999"]);
     } else {
@@ -185,11 +185,11 @@ const Home: NextPage = () => {
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
   const closeInfoBox = () => {
-    console.log("mapref.current", mapref.current);
-    console.log(
-      "mapref.current.getSource eviction-point",
-      mapref.current.getSource("eviction-point")
-    );
+    // console.log("mapref.current", mapref.current);
+    // console.log(
+    //   "mapref.current.getSource eviction-point",
+    //   mapref.current.getSource("eviction-point")
+    // );
 
     mapref.current.setLayoutProperty(
       "points-selected-evictions-layer",
@@ -280,7 +280,7 @@ const Home: NextPage = () => {
         mapboxgl.setRTLTextPlugin(
           "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.10.1/mapbox-gl-rtl-text.js",
           (callbackinfo: any) => {
-            console.log(callbackinfo);
+            // console.log(callbackinfo);
             rtldone = true;
           }
         );
@@ -477,7 +477,7 @@ const Home: NextPage = () => {
             );
           });
 
-          console.log("filteredfeatures", filteredfeatures);
+          // console.log("filteredfeatures", filteredfeatures);
 
           // Copy coordinates array.
           const coordinates = closestcoords.slice();
@@ -640,7 +640,7 @@ const Home: NextPage = () => {
             );
           });
 
-          console.log("filteredfeatures", filteredfeatures);
+          // console.log("filteredfeatures", filteredfeatures);
 
           // Copy coordinates array.
           const coordinates = closestcoords.slice();
@@ -799,7 +799,7 @@ const Home: NextPage = () => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
-        console.log(e.features);
+        // console.log(e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
             address: obj.properties["Address"],
@@ -833,7 +833,7 @@ const Home: NextPage = () => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
-        console.log(e.features);
+        // console.log(e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
             address: obj.properties["Address"],
@@ -1068,7 +1068,7 @@ const Home: NextPage = () => {
           JSON.stringify(["all", ...arrayoffilterables])
         );
 
-        console.log(filterinput);
+        // console.log(filterinput);
 
         if (doneloadingmap === true) {
           mapref.current.setFilter(
@@ -1144,7 +1144,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>City of LA Eviction Notices (Feb - July 2023) | Map</title>
+          <title>City of LA Eviction Notices (Feb - Aug 2023) | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1152,12 +1152,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Eviction Notices (Feb - July 2023) | Map"
+            content="City of LA Eviction Notices (Feb - Aug 2023) | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Eviction Notices (Feb - July 2023)"
+            content="City of LA Eviction Notices (Feb - Aug 2023)"
           ></meta>
           <meta
             name="twitter:image"
@@ -1166,18 +1166,18 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="City of LA Eviction Notices (Feb - July 2023)"
+            content="City of LA Eviction Notices (Feb - Aug 2023)"
           />
 
           <meta property="og:url" content="https://evictions.lacontroller.io" />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Eviction Notices (Feb - July 2023) | Map"
+            content="City of LA Eviction Notices (Feb - Aug 2023) | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Eviction Notices (Feb - July 2023)"
+            content="City of LA Eviction Notices (Feb - Aug 2023)"
           />
           <meta
             property="og:image"
