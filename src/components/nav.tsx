@@ -22,7 +22,7 @@ const navigation: any = [
   },
   {
     name: "Table",
-    href: "https://docs.google.com/spreadsheets/d/1d6xgd95m0v914YTePb8m-9Ir9SVKNKx4-Xw8N_4I0pk/edit?usp=sharing",
+    href: "https://docs.google.com/spreadsheets/d/17T31bnUEnOufQ2LKq8W5lbWDOk3RKt9du9uCt0DSZYY/edit?usp=sharing",
     target: "_blank",
   },
   {
