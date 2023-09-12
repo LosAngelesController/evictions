@@ -1162,7 +1162,7 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://firebasestorage.googleapis.com/v0/b/lacontroller-2b7de.appspot.com/o/evictionmap.png?alt=media&token=ac8415cd-302b-4066-8e8f-be843073e03b"
+            content="https://evictions.lacontroller.io/eviction-notices.png"
           ></meta>
           <meta
             name="description"
