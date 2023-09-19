@@ -1,7 +1,5 @@
-import ActiveLink from "./ActiveLink";
 import { Disclosure } from "@headlessui/react";
 import { ChevronDoubleDownIcon, XIcon } from "@heroicons/react/outline";
-
 interface newiteminterface {
   name: string;
   href: string;
@@ -55,7 +53,7 @@ function Nav() {
 
   const messageBox = () => {
     alert(
-      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view eviction details by location.\n\n-Click Filter button to view by Eviction Category, Notice Type, Council District, and top 20 Zip Codes."
+      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n-Click on a map point to view eviction details by location.\n-Click Filter button to view by Eviction Category, Notice Type, Council District, and top 20 Zip Codes.\n\n-Haga clic para explorar ubicaciones en el mapa o ingrese una ubicación en la barra de búsqueda.\n-Haga clic en el punto del mapa para ver los detalles del desalojo por ubicación.\n-Haga clic en el botón Filtrar para ver por categoría de desalojo, tipo de aviso, distrito municipal y los 20 códigos postales principales."
     );
   };
 
