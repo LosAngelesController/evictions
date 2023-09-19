@@ -1194,7 +1194,7 @@ const Home: NextPage = () => {
             <div className="hidden sm:block">
               <MapTitle />
             </div>
-            <div className="absolute resetButton mt-[0.1em] sm:mt-[3em] md:mt-[3.7em] sm:ml-[17em] md:ml-[17em] top-0 z-5 ml-[12em] text-base bold md:semi-bold break-words">
+            <div className="absolute resetButton mt-[0.1em] sm:mt-[3em] md:mt-[3.7em] sm:ml-[17em] md:ml-[18em] top-0 z-5 ml-[13em] text-base bold md:semi-bold break-words">
               <button
                 className="text-red-500 font-bold text-sm"
                 onClick={onResetClicked}
