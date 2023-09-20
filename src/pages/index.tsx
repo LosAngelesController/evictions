@@ -1139,6 +1139,16 @@ const Home: NextPage = () => {
         withNormalizeCSS
       >
         <Head>
+          {/* <link
+            rel="icon"
+            href="https://evictions.lacontroller.io/cropped-favicon-1-32x32.png"
+            sizes="32x32"
+          />
+          <link
+            rel="icon"
+            href="https://evictions.lacontroller.io/cropped-favicon-1-180x180.png"
+            sizes="180x180"
+          /> */}
           <meta charSet="utf-8" />
           <meta
             name="viewport"
@@ -1541,8 +1551,8 @@ const Home: NextPage = () => {
                 className={`text-sm ${
                   evictionInfoOpen
                     ? `px-3 pt-2 pb-3 fixed sm:relative top-auto bottom-0 left-0 right-0 w-full sm:mt-2 sm:w-auto 
-                                    sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto bg-[#212121] sm:rounded-xl bg-opacity-90 sm:bg-opacity-80 text-white 
-                                    border-t-2 border-gray-200 sm:border sm:border-gray-400`
+                      sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto bg-[#212121] sm:rounded-xl bg-opacity-90 sm:bg-opacity-80 text-white 
+                      border-t-2 border-gray-200 sm:border sm:border-gray-400`
                     : "hidden"
                 }`}
               >
