@@ -34,7 +34,6 @@ import { Intensity } from "@/components/Intensity";
 //   return pointDistricts;
 // }
 
-
 // function insidePolygon(point: any, polygon: any): [boolean, number] {
 //   const x = point.lon;
 //   const y = point.lat;
