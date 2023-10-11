@@ -33,6 +33,7 @@
     "@datadog/browser-rum": "^4.32.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@google-cloud/translate": "^8.0.2",
     "@headlessui/react": "^0.0.0-insiders.63383c4",
     "@heroicons/react": "^1.0.6",
     "@mantine/core": "^5.10.0",

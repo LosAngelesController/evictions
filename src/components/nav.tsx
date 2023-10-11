@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronDoubleDownIcon, XIcon } from "@heroicons/react/outline";
 interface newiteminterface {
@@ -6,6 +8,25 @@ interface newiteminterface {
   target: string;
   current: boolean;
 }
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
+
+// Function to show Google Translate dropdown
+const showTranslateDropdown = () => {
+  if (window.google && window.google.translate) {
+    new window.google.translate.TranslateElement(
+      {
+        pageLanguage: "en",
+        layout: window.google.translate.TranslateElement.InlineLayout.COMBO,
+      },
+      "google_translate_element"
+    );
+  }
+};
 
 const navigation: any = [
   {
@@ -35,6 +56,23 @@ function classNames(...classes: any) {
 }
 
 function Nav() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      const script = document.createElement("script");
+      script.src =
+        // "https://translate.google.com/translate_a/element.js?cb=showTranslateDropdown";
+        "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, [isMounted]);
+
   const navarraycurrent = () => {
     return navigation.map((item: any) => {
       if (typeof window !== "undefined") {
@@ -58,10 +96,10 @@ function Nav() {
   };
 
   return (
-    <Disclosure as="nav" className="z-50 bg-[#1a1a1a] flex flex-col">
+    <Disclosure as="nav" className="bg-[#1a1a1a] flex flex-col">
       {({ open }) => (
         <>
-          <div className="z-50 flex flex-row  h-content">
+          <div className="flex flex-row  h-content">
             <div className="">
               {/* Mobile menu button*/}
               <div className="flex flex-row sm:hidden">
@@ -100,11 +138,21 @@ function Nav() {
                     </a>
                   ))}
                   <p
-                    className="text-white py-2 text-sm md:text-base   md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
+                    className="text-white py-2 text-sm md:text-base md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
                     onClick={messageBox}
                   >
                     Instructions
                   </p>
+                  <div
+                    className="text-white py-2 text-sm md:text-base md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
+                    onClick={showTranslateDropdown}
+                  >
+                    Translate
+                  </div>
+                  <div
+                    id="google_translate_element"
+                    className="translate-dropdown"
+                  ></div>
                 </div>
               </div>
             </div>
@@ -136,6 +184,16 @@ function Nav() {
               >
                 Instructions
               </p>
+              {/* <div
+                className="text-white font-medium text-base py-2 md:text-base md:py-3 px-3 block focus:outline-none"
+                onClick={showTranslateDropdown}
+              >
+                Translate
+              </div>
+              <div
+                id="google_translate_element"
+                className="translate-dropdown"
+              ></div> */}
             </div>
           </Disclosure.Panel>
         </>

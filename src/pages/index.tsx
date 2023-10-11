@@ -16,6 +16,60 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
+// const arrestsByDistrict = require("./evictions.json");
+
+// function assignPointsToDistrict(points: any, districtJson: any) {
+//   const districtPolygons = districtJson.features.map((feature: any) => feature.geometry.coordinates[0][0]);
+
+//   const pointDistricts = points.map((point: any) => {
+//     for (let i = 0; i < districtPolygons.length; i++) {
+//       const polygon = districtPolygons[i];
+//       const [pointInside, id] = insidePolygon(point, polygon);
+//       if (pointInside) {
+//         let distName = Number(districtJson.features[i].properties.district);
+//         return {"ID": id, "CD#": distName};
+//       }
+//     }
+//   });
+//   return pointDistricts;
+// }
+
+
+// function insidePolygon(point: any, polygon: any): [boolean, number] {
+//   const x = point.lon;
+//   const y = point.lat;
+//   const id = point.id;
+
+//   let inside = false;
+
+//   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+//     const [xi, yi] = polygon[i];
+//     const [xj, yj] = polygon[j];
+
+//     const intersect = ((yi > y) !== (yj > y)) &&
+//       (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+//     if (intersect) {
+//       inside = !inside;
+//     }
+//   }
+//   return [inside, id];
+// }
+
+// const locationPoints = arrestsByDistrict.map((arrest: any) => {
+//   return {
+//     id: arrest["ID"],
+//     lon: arrest["LON"],
+//     lat: arrest["LAT"],
+//   };
+// });
+
+// const districtNumbers = assignPointsToDistrict(locationPoints, councildistricts);
+
+// console.log("districtNumbers", districtNumbers);
+// var jsonString = JSON.stringify(districtNumbers);
+// console.log(jsonString);
+
 const filterableDistricts: any = {
   1: 4127,
   2: 3123,

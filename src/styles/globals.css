@@ -19,3 +19,27 @@ a {
   box-sizing: border-box;
 }
 
+/* styles.css */
+.translate-dropdown {
+  /* Your custom styles here */
+  margin-top: 10px;
+  max-height: 30px;
+  background-color: lightgray;
+  /* Add more styles as needed */
+}
+
+
+select.goog-te-combo {
+  background-color: lightgray;
+  color: black;
+  font-size: medium;
+}
+
+a.VIpgJd-ZVi9od-l4eHX-hSRGPd {
+  visibility: hidden;
+}
+
+.goog-te-gadget {
+  color: #1A1B1E !important;
+  font-size: 7px !important;
+}
