@@ -1071,10 +1071,7 @@ const Home: NextPage = () => {
         // console.log(filterinput);
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter(
-            "evictions-sep-2023-zipcodes",
-            filterinput
-          );
+          mapref.current.setFilter("evictions-sep-2023-zipcodes", filterinput);
         }
       }
     }
