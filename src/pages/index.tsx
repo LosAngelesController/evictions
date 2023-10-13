@@ -16,119 +16,66 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
-// const arrestsByDistrict = require("./evictions.json");
-
-// function assignPointsToDistrict(points: any, districtJson: any) {
-//   const districtPolygons = districtJson.features.map((feature: any) => feature.geometry.coordinates[0][0]);
-
-//   const pointDistricts = points.map((point: any) => {
-//     for (let i = 0; i < districtPolygons.length; i++) {
-//       const polygon = districtPolygons[i];
-//       const [pointInside, id] = insidePolygon(point, polygon);
-//       if (pointInside) {
-//         let distName = Number(districtJson.features[i].properties.district);
-//         return {"ID": id, "CD#": distName};
-//       }
-//     }
-//   });
-//   return pointDistricts;
-// }
-
-// function insidePolygon(point: any, polygon: any): [boolean, number] {
-//   const x = point.lon;
-//   const y = point.lat;
-//   const id = point.id;
-
-//   let inside = false;
-
-//   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-//     const [xi, yi] = polygon[i];
-//     const [xj, yj] = polygon[j];
-
-//     const intersect = ((yi > y) !== (yj > y)) &&
-//       (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-
-//     if (intersect) {
-//       inside = !inside;
-//     }
-//   }
-//   return [inside, id];
-// }
-
-// const locationPoints = arrestsByDistrict.map((arrest: any) => {
-//   return {
-//     id: arrest["ID"],
-//     lon: arrest["LON"],
-//     lat: arrest["LAT"],
-//   };
-// });
-
-// const districtNumbers = assignPointsToDistrict(locationPoints, councildistricts);
-
-// console.log("districtNumbers", districtNumbers);
-// var jsonString = JSON.stringify(districtNumbers);
-// console.log(jsonString);
-
 const filterableDistricts: any = {
-  1: 4127,
-  2: 3123,
-  3: 4616,
-  4: 3248,
-  5: 4474,
-  6: 2255,
-  7: 641,
-  8: 1508,
-  9: 1930,
-  10: 4507,
-  11: 3373,
-  12: 1373,
-  13: 6445,
-  14: 6798,
-  15: 1323,
+  1: 4775,
+  2: 3498,
+  3: 5324,
+  4: 3610,
+  5: 5354,
+  6: 2781,
+  7: 948,
+  8: 1820,
+  9: 2145,
+  10: 5412,
+  11: 3999,
+  12: 2057,
+  13: 7396,
+  14: 8604,
+  15: 1595,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
 
 const filterableCategories: any = {
-  "At-Fault": 49925,
-  "No-Fault": 75,
+  "At-Fault": 59420,
+  "No-Fault": 162,
 };
 
 const filterableCategoriesKeys = Object.keys(filterableCategories);
 
 const filterableNotices: any = {
-  "3 Day": 45547,
-  "10 Day": 624,
-  "15 Day": 11,
-  "30 Day": 3648,
-  "60 Day": 146,
-  "90 Day": 17,
-  "120 Day": 7,
+  "3 Day": 54260,
+  "10 Day": 734,
+  "15 Day": 22,
+  "30 Day": 4307,
+  "60 Day": 205,
+  "90 Day": 36,
+  "120 Day": 18,
 };
 
 const filterableNoticesKeys = Object.keys(filterableNotices);
 
 const filterableZipCodes: any = {
-  90028: 3585,
-  90036: 2458,
-  91367: 2099,
-  90017: 2076,
-  90014: 1590,
-  90012: 1572,
-  90005: 1545,
-  90015: 1447,
-  91601: 1398,
-  90020: 1284,
-  90007: 1209,
-  90004: 1120,
-  90013: 1049,
-  90057: 1001,
-  91303: 844,
-  90046: 843,
-  90045: 767,
-  91406: 639,
-  91335: 624,
-  90038: 595,
+  90028: 4006,
+  90036: 2850,
+  91367: 2302,
+  90017: 2256,
+  90015: 2614,
+  90012: 2146,
+  90014: 1856,
+  90005: 1756,
+  91601: 1558,
+  90020: 1404,
+  90004: 1342,
+  90013: 1250,
+  90007: 1226,
+  90057: 1124,
+  90045: 1009,
+  90006: 971,
+  90046: 955,
+  91303: 946,
+  91406: 728,
+  91402: 714,
 };
 
 const filterableZipCodeKeys = Object.keys(filterableZipCodes);
@@ -165,7 +112,7 @@ const Home: NextPage = () => {
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "Evictions_aug23";
+  var mapname = "Evictions_sep23";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
@@ -274,11 +221,11 @@ const Home: NextPage = () => {
       levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
     }
 
-    var layer = mapref.current.getLayer("evictions-feb-aug-2023");
+    var layer = mapref.current.getLayer("evictions-sep-2023");
 
     if (layer) {
       mapref.current.setPaintProperty(
-        "evictions-feb-aug-2023",
+        "evictions-sep-2023",
         "heatmap-intensity",
         levels
       );
@@ -518,7 +465,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "evictions-feb-aug-2023", (e: any) => {
+      map.on("mouseover", "evictions-sep-2023", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -655,7 +602,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "evictions-feb-aug-2023", () => {
+      map.on("mouseleave", "evictions-sep-2023", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -674,14 +621,14 @@ const Home: NextPage = () => {
         },
       });
 
-      map.on("mouseleave", "eviction-feb-aug-2023-zipcodes", () => {
+      map.on("mouseleave", "evictions-sep-2023-zipcodes", () => {
         if (urlParams.get("stopmouseleave") === null) {
           map.getCanvas().style.cursor = "";
           popup.remove();
         }
       });
 
-      map.on("mouseover", "eviction-feb-aug-2023-zipcodes", (e: any) => {
+      map.on("mouseover", "evictions-sep-2023-zipcodes", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -848,7 +795,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "evictions-feb-aug-2023", (e: any) => {
+      map.on("mousedown", "evictions-sep-2023", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
@@ -882,7 +829,7 @@ const Home: NextPage = () => {
         setEvictionData(filteredData);
       });
 
-      map.on("mousedown", "eviction-feb-aug-2023-zipcodes", (e: any) => {
+      map.on("mousedown", "evictions-sep-2023-zipcodes", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
@@ -1098,7 +1045,7 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions-feb-aug-2023", filterinput);
+          mapref.current.setFilter("evictions-sep-2023", filterinput);
         }
       }
     }
@@ -1125,7 +1072,7 @@ const Home: NextPage = () => {
 
         if (doneloadingmap === true) {
           mapref.current.setFilter(
-            "eviction-feb-aug-2023-zipcodes",
+            "evictions-sep-2023-zipcodes",
             filterinput
           );
         }
@@ -1197,7 +1144,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>City of LA Eviction Notices (Feb - Aug 2023) | Map</title>
+          <title>City of LA Eviction Notices (Feb - Sep 2023) | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1205,12 +1152,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Eviction Notices (Feb - Aug 2023) | Map"
+            content="City of LA Eviction Notices (Feb - Sep 2023) | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Eviction Notices (Feb - Aug 2023)"
+            content="City of LA Eviction Notices (Feb - Sep 2023)"
           ></meta>
           <meta
             name="twitter:image"
@@ -1219,18 +1166,18 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="City of LA Eviction Notices (Feb - Aug 2023)"
+            content="City of LA Eviction Notices (Feb - Sep 2023)"
           />
 
           <meta property="og:url" content="https://evictions.lacontroller.io" />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Eviction Notices (Feb - Aug 2023) | Map"
+            content="City of LA Eviction Notices (Feb - Sep 2023) | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Eviction Notices (Feb - Aug 2023)"
+            content="City of LA Eviction Notices (Feb - Sep 2023)"
           />
           <meta
             property="og:image"

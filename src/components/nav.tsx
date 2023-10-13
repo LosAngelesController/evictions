@@ -41,7 +41,7 @@ const navigation: any = [
   },
   {
     name: "Table",
-    href: "https://docs.google.com/spreadsheets/d/17T31bnUEnOufQ2LKq8W5lbWDOk3RKt9du9uCt0DSZYY/edit?usp=sharing",
+    href: "https://docs.google.com/spreadsheets/d/1DyRK0SsBvhD9q7IRlGnEUgZg1-LfQ_st1_24Vp_R_0Y/edit?usp=sharing",
     target: "_blank",
   },
   {
@@ -66,8 +66,8 @@ function Nav() {
     if (isMounted) {
       const script = document.createElement("script");
       script.src =
-        // "https://translate.google.com/translate_a/element.js?cb=showTranslateDropdown";
-        "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+        "https://translate.google.com/translate_a/element.js?cb=showTranslateDropdown";
+        // "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       script.async = true;
       document.body.appendChild(script);
     }
@@ -184,7 +184,7 @@ function Nav() {
               >
                 Instructions
               </p>
-              {/* <div
+              <div
                 className="text-white font-medium text-base py-2 md:text-base md:py-3 px-3 block focus:outline-none"
                 onClick={showTranslateDropdown}
               >
@@ -193,7 +193,7 @@ function Nav() {
               <div
                 id="google_translate_element"
                 className="translate-dropdown"
-              ></div> */}
+              ></div>
             </div>
           </Disclosure.Panel>
         </>
