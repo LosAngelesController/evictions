@@ -184,12 +184,12 @@ function Nav() {
               >
                 Instructions
               </p>
-              <div
+              {/* <div
                 className="text-white font-medium text-base py-2 md:text-base md:py-3 px-3 block focus:outline-none"
                 onClick={showTranslateDropdown}
               >
                 Translate
-              </div>
+              </div> */}
               <div
                 id="google_translate_element"
                 className="translate-dropdown"
