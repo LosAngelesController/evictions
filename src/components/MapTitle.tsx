@@ -9,7 +9,7 @@ export function MapTitle() {
         color: "#ffffff",
       }}
     >
-      <strong className="">Eviction Notices Feb - Sep 2023</strong>
+      <strong className="">Eviction Notices Feb - Oct 2023</strong>
     </div>
   );
 }
