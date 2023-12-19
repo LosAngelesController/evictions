@@ -17,65 +17,65 @@ import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
 const filterableDistricts: any = {
-  1: 5264,
-  2: 3819,
-  3: 5833,
-  4: 3973,
-  5: 5951,
-  6: 3115,
-  7: 1062,
-  8: 2045,
-  9: 2296,
-  10: 5998,
-  11: 4489,
-  12: 2321,
-  13: 8241,
-  14: 9527,
-  15: 1801,
+  1: 5633,
+  2: 4084,
+  3: 6269,
+  4: 4281,
+  5: 6622,
+  6: 3408,
+  7: 1174,
+  8: 2253,
+  9: 2474,
+  10: 6596,
+  11: 4816,
+  12: 2543,
+  13: 8988,
+  14: 10224,
+  15: 1990,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
 
 const filterableCategories: any = {
-  "At-Fault": 65789,
-  "No-Fault": 218,
+  "At-Fault": 71150,
+  "No-Fault": 279,
 };
 
 const filterableCategoriesKeys = Object.keys(filterableCategories);
 
 const filterableNotices: any = {
-  "3 Day": 60030,
-  "10 Day": 838,
-  "15 Day": 22,
-  "30 Day": 4787,
-  "60 Day": 249,
-  "90 Day": 26,
-  "120 Day": 55,
+  "3 Day": 64975,
+  "10 Day": 910,
+  "15 Day": 26,
+  "30 Day": 5118,
+  "60 Day": 287,
+  "90 Day": 34,
+  "120 Day": 79,
 };
 
 const filterableNoticesKeys = Object.keys(filterableNotices);
 
 const filterableZipCodes: any = {
-  90028: 4445,
-  90036: 3179,
-  91367: 2514,
-  90017: 2432,
-  90015: 2399,
-  90012: 2272,
-  90014: 2055,
-  90005: 1918,
-  91601: 1681,
-  90020: 1553,
-  90004: 1489,
-  90013: 1447,
-  90057: 1286,
-  90007: 1249,
-  90045: 1086,
-  90046: 1059,
-  90006: 1039,
-  91303: 1018,
-  91406: 817,
-  91402: 797,
+  90028: 4778,
+  90036: 3566,
+  91367: 2682,
+  90015: 2614,
+  90017: 2573,
+  90012: 2305,
+  90014: 2233,
+  90005: 2091,
+  91601: 1781,
+  90020: 1728,
+  90004: 1682,
+  90013: 1567,
+  90057: 1400,
+  90007: 1276,
+  90045: 1186,
+  90046: 1144,
+  91303: 1111,
+  90006: 1098,
+  91402: 888,
+  91406: 882,
 };
 
 const filterableZipCodeKeys = Object.keys(filterableZipCodes);
@@ -112,7 +112,7 @@ const Home: NextPage = () => {
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "Evictions_oct23";
+  var mapname = "Evictions_nov23";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
@@ -221,11 +221,11 @@ const Home: NextPage = () => {
       levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
     }
 
-    var layer = mapref.current.getLayer("evictions-oct-2023");
+    var layer = mapref.current.getLayer("evictions-nov-2023");
 
     if (layer) {
       mapref.current.setPaintProperty(
-        "evictions-oct-2023",
+        "evictions-nov-2023",
         "heatmap-intensity",
         levels
       );
@@ -465,7 +465,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "evictions-oct-2023", (e: any) => {
+      map.on("mouseover", "evictions-nov-2023", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -602,7 +602,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "evictions-oct-2023", () => {
+      map.on("mouseleave", "evictions-nov-2023", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -621,14 +621,14 @@ const Home: NextPage = () => {
         },
       });
 
-      map.on("mouseleave", "evictions-oct-2023-zipcodes", () => {
+      map.on("mouseleave", "evictions-nov-2023-zipcodes", () => {
         if (urlParams.get("stopmouseleave") === null) {
           map.getCanvas().style.cursor = "";
           popup.remove();
         }
       });
 
-      map.on("mouseover", "evictions-oct-2023-zipcodes", (e: any) => {
+      map.on("mouseover", "evictions-nov-2023-zipcodes", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -795,7 +795,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "evictions-oct-2023", (e: any) => {
+      map.on("mousedown", "evictions-nov-2023", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
@@ -829,7 +829,7 @@ const Home: NextPage = () => {
         setEvictionData(filteredData);
       });
 
-      map.on("mousedown", "evictions-oct-2023-zipcodes", (e: any) => {
+      map.on("mousedown", "evictions-nov-2023-zipcodes", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
@@ -1045,7 +1045,7 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions-oct-2023", filterinput);
+          mapref.current.setFilter("evictions-nov-2023", filterinput);
         }
       }
     }
@@ -1071,7 +1071,7 @@ const Home: NextPage = () => {
         // console.log(filterinput);
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions-oct-2023-zipcodes", filterinput);
+          mapref.current.setFilter("evictions-nov-2023-zipcodes", filterinput);
         }
       }
     }
@@ -1141,7 +1141,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>City of LA Eviction Notices (Feb - Oct 2023) | Map</title>
+          <title>City of LA Eviction Notices (Feb - Nov 2023) | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1149,36 +1149,36 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Eviction Notices (Feb - Oct 2023) | Map"
+            content="City of LA Eviction Notices (Feb - Nov 2023) | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Eviction Notices (Feb - Oct 2023)"
+            content="City of LA Eviction Notices (Feb - Nov 2023)"
           ></meta>
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://evictions.lacontroller.io/eviction-notices.png"
+            content="https://evictions.lacontroller.app/eviction-notices.png"
           ></meta>
           <meta
             name="description"
             content="City of LA Eviction Notices (Feb - Oct 2023)"
           />
 
-          <meta property="og:url" content="https://evictions.lacontroller.io" />
+          <meta property="og:url" content="https://evictions.lacontroller.app" />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Eviction Notices (Feb - Oct 2023) | Map"
+            content="City of LA Eviction Notices (Feb - Nov 2023) | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Eviction Notices (Feb - Oct 2023)"
+            content="City of LA Eviction Notices (Feb - Nov 2023)"
           />
           <meta
             property="og:image"
-            content="https://evictions.lacontroller.io/eviction-notices.png"
+            content="https://evictions.lacontroller.app/eviction-notices.png"
           />
         </Head>
 

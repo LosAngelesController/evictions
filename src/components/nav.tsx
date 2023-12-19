@@ -41,7 +41,7 @@ const navigation: any = [
   },
   {
     name: "Table",
-    href: "https://docs.google.com/spreadsheets/d/1_16bn-28uwWSS9ablEVLBK9__CBv2ZSxBf6DAApcFo8/edit?usp=sharing",
+    href: "https://docs.google.com/spreadsheets/d/14zYmjZ9oUWyF0bwLnFrGAM64C3CqUvMrCPrUkYEIgQ8/edit?usp=sharing",
     target: "_blank",
   },
   {
@@ -184,16 +184,6 @@ function Nav() {
               >
                 Instructions
               </p>
-              {/* <div
-                className="text-white font-medium text-base py-2 md:text-base md:py-3 px-3 block focus:outline-none"
-                onClick={showTranslateDropdown}
-              >
-                Translate
-              </div> */}
-              <div
-                id="google_translate_element"
-                className="translate-dropdown"
-              ></div>
             </div>
           </Disclosure.Panel>
         </>
