@@ -1166,7 +1166,10 @@ const Home: NextPage = () => {
             content="City of LA Eviction Notices (Feb - Oct 2023)"
           />
 
-          <meta property="og:url" content="https://evictions.lacontroller.app" />
+          <meta
+            property="og:url"
+            content="https://evictions.lacontroller.app"
+          />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
