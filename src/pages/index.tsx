@@ -17,65 +17,65 @@ import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
 const filterableDistricts: any = {
-  1: 5633,
-  2: 4084,
-  3: 6269,
-  4: 4281,
-  5: 6622,
-  6: 3408,
-  7: 1174,
-  8: 2253,
-  9: 2474,
-  10: 6596,
-  11: 4816,
-  12: 2543,
-  13: 8988,
-  14: 10224,
-  15: 1990,
+  1: 5949,
+  2: 4381,
+  3: 6837,
+  4: 4923,
+  5: 6709,
+  6: 3688,
+  7: 1351,
+  8: 3141,
+  9: 2314,
+  10: 7290,
+  11: 5340,
+  12: 2789,
+  13: 9700,
+  14: 10514,
+  15: 2162,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
 
 const filterableCategories: any = {
-  "At-Fault": 71150,
-  "No-Fault": 279,
+  "At-Fault": 76762,
+  "No-Fault": 329,
 };
 
 const filterableCategoriesKeys = Object.keys(filterableCategories);
 
 const filterableNotices: any = {
-  "3 Day": 64975,
-  "10 Day": 910,
-  "15 Day": 26,
-  "30 Day": 5118,
-  "60 Day": 287,
-  "90 Day": 34,
-  "120 Day": 79,
+  "3 Day": 70002,
+  "10 Day": 959,
+  "15 Day": 27,
+  "30 Day": 5646,
+  "60 Day": 317,
+  "90 Day": 37,
+  "120 Day": 103,
 };
 
 const filterableNoticesKeys = Object.keys(filterableNotices);
 
 const filterableZipCodes: any = {
-  90028: 5177,
-  90036: 3865,
+  90028: 5154,
+  90036: 3840,
   91367: 2954,
-  90015: 2849,
-  90017: 2949,
-  90012: 2355,
+  90015: 2841,
+  90017: 2756,
+  90012: 2349,
   90014: 2386,
-  90005: 2270,
+  90005: 2268,
   91601: 1910,
-  90020: 2108,
-  90004: 1849,
-  90013: 1659,
-  90057: 1555,
-  90007: 1290,
+  90020: 1891,
+  90004: 1785,
+  90013: 1650,
+  90057: 1553,
+  90007: 1289,
   90045: 1300,
-  90046: 1214,
-  91303: 1206,
-  90006: 1145,
+  90046: 1212,
+  91303: 1204,
+  90006: 1140,
   91402: 982,
-  91406: 927,
+  91406: 925,
 };
 
 const filterableZipCodeKeys = Object.keys(filterableZipCodes);
@@ -231,27 +231,10 @@ const Home: NextPage = () => {
       );
     }
   };
-  const recomputeIntensity2 = () => {
-    let levels = ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
-
-    if (normalizeIntensity === true) {
-      levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
-    }
-
-    var layer = mapref.current.getLayer("evictions-dec-2023-zipcodes");
-
-    if (layer) {
-      mapref.current.setPaintProperty(
-        "evictions-dec-2023-zipcodes",
-        "heatmap-intensity",
-        levels
-      );
-    }
-  };
 
   useEffect(() => {
     if (mapref.current) {
-      recomputeIntensity(), recomputeIntensity2();
+      recomputeIntensity();
     }
   }, [normalizeIntensity]);
 
@@ -1114,7 +1097,7 @@ const Home: NextPage = () => {
       setFilteredCategoriesPre([]);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
-      // setFilteredZipCodesPre([]);
+      setFilteredZipCodesPre([]);
     } else if (selectedfilteropened === "zipcodes") {
       setFilteredZipCodesPre([]);
     }
