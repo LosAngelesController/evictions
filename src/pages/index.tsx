@@ -112,7 +112,7 @@ const Home: NextPage = () => {
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "evictions-feb-dec23";
+  var mapname = "Evictions_feb-dec23";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
