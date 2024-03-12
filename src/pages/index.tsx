@@ -1047,6 +1047,7 @@ const Home: NextPage = () => {
 
         if (doneloadingmap === true) {
           mapref.current.setFilter("evictions-feb-dec23", filterinput);
+          mapref.current.setFilter("evictiondots", filterinput);
         }
       }
     }
