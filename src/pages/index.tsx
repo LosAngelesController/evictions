@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { computeclosestcoordsfromevent } from "../components/getclosestcoordsfromevent";
@@ -111,7 +111,10 @@ const Home: NextPage = () => {
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [evictionInfo, setEvictionInfo] = useState(0);
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
-  const [mapboxConfig, setMapboxConfig] = useState<{ mapboxToken: string; mapboxStyle: string } | null>(null);
+  const [mapboxConfig, setMapboxConfig] = useState<{
+    mapboxToken: string;
+    mapboxStyle: string;
+  } | null>(null);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
   var mapname = "Evictions_feb-dec23";
@@ -240,15 +243,14 @@ const Home: NextPage = () => {
     }
   }, [normalizeIntensity]);
 
-
   useEffect(() => {
     const fetchMapboxConfig = async () => {
       try {
-        const response = await fetch('/api/mapboxConfig');
+        const response = await fetch("/api/mapboxConfig");
         const data = await response.json();
         setMapboxConfig(data);
       } catch (error) {
-        console.error('Error fetching Mapbox config:', error);
+        console.error("Error fetching Mapbox config:", error);
       }
     };
 
@@ -258,705 +260,193 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (mapboxConfig && divRef.current) {
       mapboxgl.accessToken = mapboxConfig.mapboxToken;
-    // const mapboxToken = process.env.MAPBOX_ACCESS_TOKEN;
-    // if (!mapboxToken) {
-    //   throw new Error("MAPBOX_ACCESS_TOKEN is not defined");
-    // }
-    // mapboxgl.accessToken = 
+      // const mapboxToken = process.env.MAPBOX_ACCESS_TOKEN;
+      // if (!mapboxToken) {
+      //   throw new Error("MAPBOX_ACCESS_TOKEN is not defined");
+      // }
+      // mapboxgl.accessToken =
 
-    // "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
+      // "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
 
-    const formulaForZoom = () => {
-      if (typeof window != "undefined") {
-        if (window.innerWidth > 700) {
-          return 10;
-        } else {
-          return 9.1;
-        }
-      }
-    };
-
-    const urlParams = new URLSearchParams(
-      typeof window != "undefined" ? window.location.search : ""
-    );
-    const latParam = urlParams.get("lat");
-    const lngParam = urlParams.get("lng");
-    const zoomParam = urlParams.get("zoom");
-    const debugParam = urlParams.get("debug");
-
-    var mapparams: any = {
-      container: divRef.current, // container ID
-      style: mapboxConfig.mapboxStyle,
-      // style: "mapbox://styles/kennethmejia/cll1gnmuz005t01rgh4h873vd", // style URL (THIS IS STREET VIEW)
-      center: [-118.41, 34], // starting position [lng, lat]
-      zoom: formulaForZoom(), // starting zoom
-    };
-
-    const map = new mapboxgl.Map(mapparams);
-    mapref.current = map;
-
-    var rtldone = false;
-
-    try {
-      if (rtldone === false && hasStartedControls === false) {
-        setHasStartedControls(true);
-        //multilingual support
-        //right to left allows arabic rendering
-        mapboxgl.setRTLTextPlugin(
-          "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.10.1/mapbox-gl-rtl-text.js",
-          (callbackinfo: any) => {
-            // console.log(callbackinfo);
-            rtldone = true;
+      const formulaForZoom = () => {
+        if (typeof window != "undefined") {
+          if (window.innerWidth > 700) {
+            return 10;
+          } else {
+            return 9.1;
           }
-        );
-      }
-
-      const language = new MapboxLanguage();
-      map.addControl(language);
-    } catch (error) {
-      console.error(error);
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    map.on("load", () => {
-      setdoneloadingmap(true);
-      setshowtotalarea(window.innerWidth > 640 ? true : false);
-
-      okaydeletepoints.current = () => {
-        try {
-          var evictionPoint: any = map.getSource("eviction-point");
-          evictionPoint.setData(null);
-        } catch (err) {
-          console.error(err);
         }
       };
 
-      const processgeocodereventresult = (eventmapbox: any) => {
-        var singlePointSet: any = map.getSource("single-point");
+      const urlParams = new URLSearchParams(
+        typeof window != "undefined" ? window.location.search : ""
+      );
+      const latParam = urlParams.get("lat");
+      const lngParam = urlParams.get("lng");
+      const zoomParam = urlParams.get("zoom");
+      const debugParam = urlParams.get("debug");
 
-        singlePointSet.setData({
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              geometry: eventmapbox.result.geometry,
-            },
-          ],
-        });
+      var mapparams: any = {
+        container: divRef.current, // container ID
+        style: mapboxConfig.mapboxStyle,
+        // style: "mapbox://styles/kennethmejia/cll1gnmuz005t01rgh4h873vd", // style URL (THIS IS STREET VIEW)
+        center: [-118.41, 34], // starting position [lng, lat]
+        zoom: formulaForZoom(), // starting zoom
       };
 
-      const processgeocodereventselect = (object: any) => {
-        var coord = object.feature.geometry.coordinates;
-        var singlePointSet: any = map.getSource("single-point");
+      const map = new mapboxgl.Map(mapparams);
+      mapref.current = map;
 
-        singlePointSet.setData({
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              geometry: object.feature.geometry,
-            },
-          ],
-        });
-      };
+      var rtldone = false;
 
-      const geocoder: any = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: map,
-        proximity: {
-          longitude: -118.41,
-          latitude: 34,
-        },
-        marker: true,
-      });
-
-      var colormarker = new mapboxgl.Marker({
-        color: "#41ffca",
-      });
-
-      const geocoderopt: any = {
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-        marker: {
-          color: "#41ffca",
-        },
-      };
-
-      const geocoder2 = new MapboxGeocoder(geocoderopt);
-      const geocoder3 = new MapboxGeocoder(geocoderopt);
-
-      geocoder.on("result", (event: any) => {
-        processgeocodereventresult(event);
-      });
-
-      geocoder.on("select", function (object: any) {
-        processgeocodereventselect(object);
-      });
-
-      var geocoderId = document.getElementById("geocoder");
-
-      if (geocoderId) {
-        if (!document.querySelector(".geocoder input")) {
-          geocoderId.appendChild(geocoder3.onAdd(map));
-
-          var inputMobile = document.querySelector(".geocoder input");
-
-          try {
-            var loadboi = document.querySelector(
-              ".mapboxgl-ctrl-geocoder--icon-loading"
-            );
-            if (loadboi) {
-              var brightspin: any = loadboi.firstChild;
-              if (brightspin) {
-                brightspin.setAttribute("style", "fill: #e2e8f0");
-              }
-              var darkspin: any = loadboi.lastChild;
-              if (darkspin) {
-                darkspin.setAttribute("style", "fill: #94a3b8");
-              }
+      try {
+        if (rtldone === false && hasStartedControls === false) {
+          setHasStartedControls(true);
+          //multilingual support
+          //right to left allows arabic rendering
+          mapboxgl.setRTLTextPlugin(
+            "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.10.1/mapbox-gl-rtl-text.js",
+            (callbackinfo: any) => {
+              // console.log(callbackinfo);
+              rtldone = true;
             }
+          );
+        }
+
+        const language = new MapboxLanguage();
+        map.addControl(language);
+      } catch (error) {
+        console.error(error);
+      }
+
+      window.addEventListener("resize", handleResize);
+
+      map.on("load", () => {
+        setdoneloadingmap(true);
+        setshowtotalarea(window.innerWidth > 640 ? true : false);
+
+        okaydeletepoints.current = () => {
+          try {
+            var evictionPoint: any = map.getSource("eviction-point");
+            evictionPoint.setData(null);
           } catch (err) {
             console.error(err);
           }
+        };
 
-          if (inputMobile) {
-            inputMobile.addEventListener("focus", () => {
-              //make the box below go away
-            });
-          }
-        }
+        const processgeocodereventresult = (eventmapbox: any) => {
+          var singlePointSet: any = map.getSource("single-point");
 
-        geocoder2.on("result", (event: any) => {
+          singlePointSet.setData({
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: eventmapbox.result.geometry,
+              },
+            ],
+          });
+        };
+
+        const processgeocodereventselect = (object: any) => {
+          var coord = object.feature.geometry.coordinates;
+          var singlePointSet: any = map.getSource("single-point");
+
+          singlePointSet.setData({
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: object.feature.geometry,
+              },
+            ],
+          });
+        };
+
+        const geocoder: any = new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: map,
+          proximity: {
+            longitude: -118.41,
+            latitude: 34,
+          },
+          marker: true,
+        });
+
+        var colormarker = new mapboxgl.Marker({
+          color: "#41ffca",
+        });
+
+        const geocoderopt: any = {
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl,
+          marker: {
+            color: "#41ffca",
+          },
+        };
+
+        const geocoder2 = new MapboxGeocoder(geocoderopt);
+        const geocoder3 = new MapboxGeocoder(geocoderopt);
+
+        geocoder.on("result", (event: any) => {
           processgeocodereventresult(event);
         });
 
-        geocoder2.on("select", function (object: any) {
+        geocoder.on("select", function (object: any) {
           processgeocodereventselect(object);
         });
 
-        geocoder3.on("result", (event: any) => {
-          processgeocodereventresult(event);
-        });
+        var geocoderId = document.getElementById("geocoder");
 
-        geocoder3.on("select", function (object: any) {
-          processgeocodereventselect(object);
-        });
-      }
+        if (geocoderId) {
+          if (!document.querySelector(".geocoder input")) {
+            geocoderId.appendChild(geocoder3.onAdd(map));
 
-      map.addSource("single-point", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
+            var inputMobile = document.querySelector(".geocoder input");
 
-      if (true) {
-        map.addLayer({
-          id: "point",
-          source: "single-point",
-          type: "circle",
-          paint: {
-            "circle-radius": 10,
-            "circle-color": "#41ffca",
-          },
-        });
-      }
-
-      if (debugParam) {
-        map.showTileBoundaries = true;
-        map.showCollisionBoxes = true;
-        map.showPadding = true;
-      }
-
-      if (urlParams.get("terraindebug")) {
-        map.showTerrainWireframe = true;
-      }
-
-      if (
-        !document.querySelector(
-          ".mapboxgl-ctrl-top-right > .mapboxgl-ctrl-geocoder"
-        )
-      ) {
-        map.addControl(geocoder2);
-      }
-
-      checkHideOrShowTopRightGeocoder();
-
-      // Create a popup, but don't add it to the map yet.
-      const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-      });
-
-      map.on("mouseover", "evictions-feb-dec23", (e: any) => {
-        if (e.features) {
-          map.getCanvas().style.cursor = "pointer";
-          const closestcoords: any = computeclosestcoordsfromevent(e);
-
-          const filteredfeatures = e.features.filter((feature: any) => {
-            return (
-              feature.geometry.coordinates[0] === closestcoords[0] &&
-              feature.geometry.coordinates[1] === closestcoords[1]
-            );
-          });
-
-          // console.log("filteredfeatures", filteredfeatures);
-
-          // Copy coordinates array.
-          const coordinates = closestcoords.slice();
-
-          /*Ensure that if the map is zoomed out such that multiple
-          copies of the feature are visible, the popup appears
-          over the copy being pointed to.*/
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-
-          if (filteredfeatures.length > 0) {
-            if (filteredfeatures[0]) {
-              if (filteredfeatures[0].properties) {
-                if (filteredfeatures[0].properties["Address"]) {
-                  const areaPC = filteredfeatures[0].properties["Address"];
-
-                  const allthelineitems = filteredfeatures.map(
-                    (eachCase: any) => {
-                      if (eachCase.properties?.["Category"]) {
-                        return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
-                          eachCase.properties["Category"]
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Notice Date"]
-                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["Notice Date"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Notice Type"]
-                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["Notice Type"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Just Cause"] &&
-                          eachCase.properties["Just Cause"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Just Cause"]}</span> `
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["CD#"]
-                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["CD#"]} </span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Address"]
-                            ? `<span class="text-teal-400">Address: ${eachCase.properties["Address"]}, </span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["City"]
-                            ? `<span class="text-teal-400">City: ${eachCase.properties["City"]}</span> `
-                            : ""
-                        }
-                        ${" "}
-                        ${
-                          eachCase.properties?.["Zip Code"]
-                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["Zip Code"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Bedroom Count"]
-                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["Bedroom Count"]}</span> `
-                            : "Bedroom Count: n/a"
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Rent Owed"] &&
-                          eachCase.properties["Rent Owed"] != "UNKNOWN"
-                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["Rent Owed"]}</span> `
-                            : ""
-                        }
-                  </li>`;
-                      }
-                    }
-                  );
-
-                  popup
-                    .setLngLat(coordinates)
-                    .setHTML(
-                      ` <div>
-                <p class="font-semibold">${areaPC}</p>
-                <p>${filteredfeatures.length} Case${
-                        filteredfeatures.length > 1 ? "s" : ""
-                      }</p>
-
-                <ul class='list-disc leading-none'>${
-                  allthelineitems.length <= 3
-                    ? allthelineitems.join("")
-                    : allthelineitems.splice(0, 3).join("")
-                }</ul> 
-                ${
-                  allthelineitems.length >= 1
-                    ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
-                    : ""
+            try {
+              var loadboi = document.querySelector(
+                ".mapboxgl-ctrl-geocoder--icon-loading"
+              );
+              if (loadboi) {
+                var brightspin: any = loadboi.firstChild;
+                if (brightspin) {
+                  brightspin.setAttribute("style", "fill: #e2e8f0");
                 }
-              </div><style>
-              .mapboxgl-popup-content {
-                background: #212121e0;
-                color: #fdfdfd;
-              }
-    
-              .flexcollate {
-                row-gap: 0.5rem;
-                display: flex;
-                flex-direction: column;
-              }
-              </style>`
-                    )
-                    .addTo(map);
+                var darkspin: any = loadboi.lastChild;
+                if (darkspin) {
+                  darkspin.setAttribute("style", "fill: #94a3b8");
                 }
               }
+            } catch (err) {
+              console.error(err);
+            }
+
+            if (inputMobile) {
+              inputMobile.addEventListener("focus", () => {
+                //make the box below go away
+              });
             }
           }
-        }
-      });
 
-      map.on("mouseleave", "evictions-feb-dec23", () => {
-        //check if the url query string "stopmouseleave" is true
-        //if it is, then don't do anything
-        //if it is not, then do the following
-
-        if (urlParams.get("stopmouseleave") === null) {
-          map.getCanvas().style.cursor = "";
-          popup.remove();
-        }
-      });
-
-      map.addSource("eviction-point", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
-
-      map.on("mouseleave", "evictions-dec-2023-zipcodes", () => {
-        if (urlParams.get("stopmouseleave") === null) {
-          map.getCanvas().style.cursor = "";
-          popup.remove();
-        }
-      });
-
-      map.on("mouseover", "evictions-dec-2023-zipcodes", (e: any) => {
-        if (e.features) {
-          map.getCanvas().style.cursor = "pointer";
-          const closestcoords: any = computeclosestcoordsfromevent(e);
-
-          const filteredfeatures = e.features.filter((feature: any) => {
-            return (
-              feature.geometry.coordinates[0] === closestcoords[0] &&
-              feature.geometry.coordinates[1] === closestcoords[1]
-            );
+          geocoder2.on("result", (event: any) => {
+            processgeocodereventresult(event);
           });
 
-          // console.log("filteredfeatures", filteredfeatures);
+          geocoder2.on("select", function (object: any) {
+            processgeocodereventselect(object);
+          });
 
-          // Copy coordinates array.
-          const coordinates = closestcoords.slice();
+          geocoder3.on("result", (event: any) => {
+            processgeocodereventresult(event);
+          });
 
-          /*Ensure that if the map is zoomed out such that multiple
-          copies of the feature are visible, the popup appears
-          over the copy being pointed to.*/
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-
-          if (filteredfeatures.length > 0) {
-            if (filteredfeatures[0]) {
-              if (filteredfeatures[0].properties) {
-                if (filteredfeatures[0].properties["Address"]) {
-                  const areaPC = filteredfeatures[0].properties["Address"];
-
-                  const allthelineitems = filteredfeatures.map(
-                    (eachCase: any) => {
-                      if (eachCase.properties?.["Category"]) {
-                        return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
-                          eachCase.properties["Category"]
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Notice Date"]
-                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["Notice Date"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Notice Type"]
-                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["Notice Type"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Just Cause"] &&
-                          eachCase.properties["Just Cause"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Just Cause"]}</span> `
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["CD#"]
-                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["CD#"]} </span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Address"]
-                            ? `<span class="text-teal-400">Address: ${eachCase.properties["Address"]}, </span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["City"]
-                            ? `<span class="text-teal-400">City: ${eachCase.properties["City"]}</span> `
-                            : ""
-                        }
-                        ${" "}
-                        ${
-                          eachCase.properties?.["Zip Code"]
-                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["Zip Code"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Bedroom Count"]
-                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["Bedroom Count"]}</span> `
-                            : "Bedroom Count: n/a"
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["Rent Owed"] &&
-                          eachCase.properties["Rent Owed"] != "UNKNOWN"
-                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["Rent Owed"]}</span> `
-                            : ""
-                        }
-                  </li>`;
-                      }
-                    }
-                  );
-
-                  popup
-                    .setLngLat(coordinates)
-                    .setHTML(
-                      ` <div>
-                <p class="font-semibold">${areaPC}</p>
-                <p>${filteredfeatures.length} Case${
-                        filteredfeatures.length > 1 ? "s" : ""
-                      }</p>
-
-                <ul class='list-disc leading-none'>${
-                  allthelineitems.length <= 3
-                    ? allthelineitems.join("")
-                    : allthelineitems.splice(0, 3).join("")
-                }</ul> 
-                ${
-                  allthelineitems.length >= 1
-                    ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
-                    : ""
-                }
-              </div><style>
-              .mapboxgl-popup-content {
-                background: #212121e0;
-                color: #fdfdfd;
-              }
-    
-              .flexcollate {
-                row-gap: 0.5rem;
-                display: flex;
-                flex-direction: column;
-              }
-              </style>`
-                    )
-                    .addTo(map);
-                }
-              }
-            }
-          }
-        }
-      });
-
-      map.loadImage("/map-marker.png", (error, image: any) => {
-        if (error) throw error;
-
-        // Add the image to the map style.
-        map.addImage("map-marker", image);
-
-        if (true) {
-          // example of how to add a pointer to what is currently selected
-          map.addLayer({
-            id: "points-selected-evictions-layer",
-            type: "symbol",
-            source: "eviction-point",
-            paint: {
-              "icon-color": "#FF8C00",
-              "icon-translate": [0, -13],
-            },
-            layout: {
-              "icon-image": "map-marker",
-              // get the title name from the source's "title" property
-              "text-allow-overlap": true,
-              "icon-allow-overlap": true,
-              "icon-ignore-placement": true,
-              "text-ignore-placement": true,
-              "icon-size": 0.5,
-              "icon-text-fit": "both",
-            },
+          geocoder3.on("select", function (object: any) {
+            processgeocodereventselect(object);
           });
         }
-      });
 
-      map.on("mousedown", "evictions-feb-dec23", (e: any) => {
-        setEvictionInfo(0);
-        setInfoBoxLength(1);
-        setEvictionInfoOpen(true);
-        // console.log(e.features);
-        let filteredData = e.features.map((obj: any) => {
-          return {
-            address: obj.properties["Address"],
-            cd: obj.properties["CD#"],
-            evictionCategory: obj.properties["Category"],
-            date: obj.properties["Notice Date"],
-            city: obj.properties.City,
-            zip: obj.properties["Zip Code"],
-            rentOwed: obj.properties["Rent Owed"],
-            bedroom: obj.properties["Bedroom Count"],
-            noticeType: obj.properties["Notice Type"],
-            justCause: obj.properties["Just Cause"],
-          };
-        });
-
-        // console.log("filteredData", filteredData);
-
-        var evictionPoint: any = map.getSource("eviction-point");
-        evictionPoint.setData(e.features[0].geometry);
-
-        map.setLayoutProperty(
-          "points-selected-evictions-layer",
-          "visibility",
-          "visible"
-        );
-
-        setEvictionData(filteredData);
-      });
-
-      map.on("mousedown", "evictions-dec-2023-zipcodes", (e: any) => {
-        setEvictionInfo(0);
-        setInfoBoxLength(1);
-        setEvictionInfoOpen(true);
-        // console.log(e.features);
-        let filteredData = e.features.map((obj: any) => {
-          return {
-            address: obj.properties["Address"],
-            cd: obj.properties["CD#"],
-            evictionCategory: obj.properties["Category"],
-            date: obj.properties["Notice Date"],
-            city: obj.properties.City,
-            zip: obj.properties["Zip Code"],
-            rentOwed: obj.properties["Rent Owed"],
-            bedroom: obj.properties["Bedroom Count"],
-            noticeType: obj.properties["Notice Type"],
-            justCause: obj.properties["Just Cause"],
-          };
-        });
-
-        // console.log("filteredData", filteredData);
-
-        var evictionPoint: any = map.getSource("eviction-point");
-        evictionPoint.setData(e.features[0].geometry);
-
-        map.setLayoutProperty(
-          "points-selected-evictions-layer",
-          "visibility",
-          "visible"
-        );
-
-        setEvictionData(filteredData);
-      });
-
-      if (true) {
-        map.addLayer(
-          {
-            id: "citybound",
-            type: "line",
-            source: {
-              type: "geojson",
-              data: citybounds,
-            },
-            paint: {
-              "line-color": "#dddddd",
-              "line-opacity": 1,
-              "line-width": 1,
-            },
-          },
-          "road-label-navigation"
-        );
-
-        map.addSource("citycouncildist", {
-          type: "geojson",
-          data: councildistricts,
-        });
-
-        map.addLayer(
-          {
-            id: "councildistrictslayer",
-            type: "line",
-            source: "citycouncildist",
-            paint: {
-              "line-color": "#7FE5D4",
-              "line-opacity": 1,
-              "line-width": 0.8,
-            },
-          },
-          "road-label-navigation"
-        );
-
-        map.addLayer(
-          {
-            id: "councildistrictsselectlayer",
-            type: "fill",
-            source: "citycouncildist",
-            paint: {
-              "fill-color": "#000000",
-              "fill-opacity": 0,
-            },
-          },
-          "road-label-navigation"
-        );
-
-        map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
-          var sourceofcouncildistselect: any = map.getSource(
-            "selected-council-dist"
-          );
-
-          var clickeddata = e.features[0].properties.district;
-
-          var councildistpolygonfound = councildistricts.features.find(
-            (eachDist: any) => eachDist.properties.district === clickeddata
-          );
-
-          if (sourceofcouncildistselect) {
-            if (councildistpolygonfound) {
-              sourceofcouncildistselect.setData(councildistpolygonfound);
-            }
-          }
-        });
-
-        map.addSource("selected-council-dist", {
+        map.addSource("single-point", {
           type: "geojson",
           data: {
             type: "FeatureCollection",
@@ -964,77 +454,590 @@ const Home: NextPage = () => {
           },
         });
 
-        map.addLayer(
-          {
-            id: "selected-council-dist-layer",
-            type: "fill",
-            source: "selected-council-dist",
+        if (true) {
+          map.addLayer({
+            id: "point",
+            source: "single-point",
+            type: "circle",
             paint: {
-              "fill-color": "#000000",
-              "fill-opacity": 0.3,
+              "circle-radius": 10,
+              "circle-color": "#41ffca",
             },
+          });
+        }
+
+        if (debugParam) {
+          map.showTileBoundaries = true;
+          map.showCollisionBoxes = true;
+          map.showPadding = true;
+        }
+
+        if (urlParams.get("terraindebug")) {
+          map.showTerrainWireframe = true;
+        }
+
+        if (
+          !document.querySelector(
+            ".mapboxgl-ctrl-top-right > .mapboxgl-ctrl-geocoder"
+          )
+        ) {
+          map.addControl(geocoder2);
+        }
+
+        checkHideOrShowTopRightGeocoder();
+
+        // Create a popup, but don't add it to the map yet.
+        const popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+        });
+
+        map.on("mouseover", "evictions-feb-dec23", (e: any) => {
+          if (e.features) {
+            map.getCanvas().style.cursor = "pointer";
+            const closestcoords: any = computeclosestcoordsfromevent(e);
+
+            const filteredfeatures = e.features.filter((feature: any) => {
+              return (
+                feature.geometry.coordinates[0] === closestcoords[0] &&
+                feature.geometry.coordinates[1] === closestcoords[1]
+              );
+            });
+
+            // console.log("filteredfeatures", filteredfeatures);
+
+            // Copy coordinates array.
+            const coordinates = closestcoords.slice();
+
+            /*Ensure that if the map is zoomed out such that multiple
+          copies of the feature are visible, the popup appears
+          over the copy being pointed to.*/
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            if (filteredfeatures.length > 0) {
+              if (filteredfeatures[0]) {
+                if (filteredfeatures[0].properties) {
+                  if (filteredfeatures[0].properties["Address"]) {
+                    const areaPC = filteredfeatures[0].properties["Address"];
+
+                    const allthelineitems = filteredfeatures.map(
+                      (eachCase: any) => {
+                        if (eachCase.properties?.["Category"]) {
+                          return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
+                            eachCase.properties["Category"]
+                          }
+                        <br />
+                        ${
+                          eachCase.properties?.["Notice Date"]
+                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["Notice Date"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Notice Type"]
+                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["Notice Type"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Just Cause"] &&
+                          eachCase.properties["Just Cause"] != "UNKNOWN"
+                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Just Cause"]}</span> `
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["CD#"]
+                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["CD#"]} </span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Address"]
+                            ? `<span class="text-teal-400">Address: ${eachCase.properties["Address"]}, </span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["City"]
+                            ? `<span class="text-teal-400">City: ${eachCase.properties["City"]}</span> `
+                            : ""
+                        }
+                        ${" "}
+                        ${
+                          eachCase.properties?.["Zip Code"]
+                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["Zip Code"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Bedroom Count"]
+                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["Bedroom Count"]}</span> `
+                            : "Bedroom Count: n/a"
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Rent Owed"] &&
+                          eachCase.properties["Rent Owed"] != "UNKNOWN"
+                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["Rent Owed"]}</span> `
+                            : ""
+                        }
+                  </li>`;
+                        }
+                      }
+                    );
+
+                    popup
+                      .setLngLat(coordinates)
+                      .setHTML(
+                        ` <div>
+                <p class="font-semibold">${areaPC}</p>
+                <p>${filteredfeatures.length} Case${
+                          filteredfeatures.length > 1 ? "s" : ""
+                        }</p>
+
+                <ul class='list-disc leading-none'>${
+                  allthelineitems.length <= 3
+                    ? allthelineitems.join("")
+                    : allthelineitems.splice(0, 3).join("")
+                }</ul> 
+                ${
+                  allthelineitems.length >= 1
+                    ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
+                    : ""
+                }
+              </div><style>
+              .mapboxgl-popup-content {
+                background: #212121e0;
+                color: #fdfdfd;
+              }
+    
+              .flexcollate {
+                row-gap: 0.5rem;
+                display: flex;
+                flex-direction: column;
+              }
+              </style>`
+                      )
+                      .addTo(map);
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        map.on("mouseleave", "evictions-feb-dec23", () => {
+          //check if the url query string "stopmouseleave" is true
+          //if it is, then don't do anything
+          //if it is not, then do the following
+
+          if (urlParams.get("stopmouseleave") === null) {
+            map.getCanvas().style.cursor = "";
+            popup.remove();
+          }
+        });
+
+        map.addSource("eviction-point", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
           },
-          "road-label-navigation"
-        );
-      }
+        });
 
-      if (hasStartedControls === false) {
-        // Add zoom and rotation controls to the map.
-        map.addControl(new mapboxgl.NavigationControl());
+        map.on("mouseleave", "evictions-dec-2023-zipcodes", () => {
+          if (urlParams.get("stopmouseleave") === null) {
+            map.getCanvas().style.cursor = "";
+            popup.remove();
+          }
+        });
 
-        // Add geolocate control to the map.
-        map.addControl(
-          new mapboxgl.GeolocateControl({
-            positionOptions: {
-              enableHighAccuracy: true,
+        map.on("mouseover", "evictions-dec-2023-zipcodes", (e: any) => {
+          if (e.features) {
+            map.getCanvas().style.cursor = "pointer";
+            const closestcoords: any = computeclosestcoordsfromevent(e);
+
+            const filteredfeatures = e.features.filter((feature: any) => {
+              return (
+                feature.geometry.coordinates[0] === closestcoords[0] &&
+                feature.geometry.coordinates[1] === closestcoords[1]
+              );
+            });
+
+            // console.log("filteredfeatures", filteredfeatures);
+
+            // Copy coordinates array.
+            const coordinates = closestcoords.slice();
+
+            /*Ensure that if the map is zoomed out such that multiple
+          copies of the feature are visible, the popup appears
+          over the copy being pointed to.*/
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            if (filteredfeatures.length > 0) {
+              if (filteredfeatures[0]) {
+                if (filteredfeatures[0].properties) {
+                  if (filteredfeatures[0].properties["Address"]) {
+                    const areaPC = filteredfeatures[0].properties["Address"];
+
+                    const allthelineitems = filteredfeatures.map(
+                      (eachCase: any) => {
+                        if (eachCase.properties?.["Category"]) {
+                          return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
+                            eachCase.properties["Category"]
+                          }
+                        <br />
+                        ${
+                          eachCase.properties?.["Notice Date"]
+                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["Notice Date"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Notice Type"]
+                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["Notice Type"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Just Cause"] &&
+                          eachCase.properties["Just Cause"] != "UNKNOWN"
+                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Just Cause"]}</span> `
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["CD#"]
+                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["CD#"]} </span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Address"]
+                            ? `<span class="text-teal-400">Address: ${eachCase.properties["Address"]}, </span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["City"]
+                            ? `<span class="text-teal-400">City: ${eachCase.properties["City"]}</span> `
+                            : ""
+                        }
+                        ${" "}
+                        ${
+                          eachCase.properties?.["Zip Code"]
+                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["Zip Code"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Bedroom Count"]
+                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["Bedroom Count"]}</span> `
+                            : "Bedroom Count: n/a"
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Rent Owed"] &&
+                          eachCase.properties["Rent Owed"] != "UNKNOWN"
+                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["Rent Owed"]}</span> `
+                            : ""
+                        }
+                  </li>`;
+                        }
+                      }
+                    );
+
+                    popup
+                      .setLngLat(coordinates)
+                      .setHTML(
+                        ` <div>
+                <p class="font-semibold">${areaPC}</p>
+                <p>${filteredfeatures.length} Case${
+                          filteredfeatures.length > 1 ? "s" : ""
+                        }</p>
+
+                <ul class='list-disc leading-none'>${
+                  allthelineitems.length <= 3
+                    ? allthelineitems.join("")
+                    : allthelineitems.splice(0, 3).join("")
+                }</ul> 
+                ${
+                  allthelineitems.length >= 1
+                    ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
+                    : ""
+                }
+              </div><style>
+              .mapboxgl-popup-content {
+                background: #212121e0;
+                color: #fdfdfd;
+              }
+    
+              .flexcollate {
+                row-gap: 0.5rem;
+                display: flex;
+                flex-direction: column;
+              }
+              </style>`
+                      )
+                      .addTo(map);
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        map.loadImage("/map-marker.png", (error, image: any) => {
+          if (error) throw error;
+
+          // Add the image to the map style.
+          map.addImage("map-marker", image);
+
+          if (true) {
+            // example of how to add a pointer to what is currently selected
+            map.addLayer({
+              id: "points-selected-evictions-layer",
+              type: "symbol",
+              source: "eviction-point",
+              paint: {
+                "icon-color": "#FF8C00",
+                "icon-translate": [0, -13],
+              },
+              layout: {
+                "icon-image": "map-marker",
+                // get the title name from the source's "title" property
+                "text-allow-overlap": true,
+                "icon-allow-overlap": true,
+                "icon-ignore-placement": true,
+                "text-ignore-placement": true,
+                "icon-size": 0.5,
+                "icon-text-fit": "both",
+              },
+            });
+          }
+        });
+
+        map.on("mousedown", "evictions-feb-dec23", (e: any) => {
+          setEvictionInfo(0);
+          setInfoBoxLength(1);
+          setEvictionInfoOpen(true);
+          // console.log(e.features);
+          let filteredData = e.features.map((obj: any) => {
+            return {
+              address: obj.properties["Address"],
+              cd: obj.properties["CD#"],
+              evictionCategory: obj.properties["Category"],
+              date: obj.properties["Notice Date"],
+              city: obj.properties.City,
+              zip: obj.properties["Zip Code"],
+              rentOwed: obj.properties["Rent Owed"],
+              bedroom: obj.properties["Bedroom Count"],
+              noticeType: obj.properties["Notice Type"],
+              justCause: obj.properties["Just Cause"],
+            };
+          });
+
+          // console.log("filteredData", filteredData);
+
+          var evictionPoint: any = map.getSource("eviction-point");
+          evictionPoint.setData(e.features[0].geometry);
+
+          map.setLayoutProperty(
+            "points-selected-evictions-layer",
+            "visibility",
+            "visible"
+          );
+
+          setEvictionData(filteredData);
+        });
+
+        map.on("mousedown", "evictions-dec-2023-zipcodes", (e: any) => {
+          setEvictionInfo(0);
+          setInfoBoxLength(1);
+          setEvictionInfoOpen(true);
+          // console.log(e.features);
+          let filteredData = e.features.map((obj: any) => {
+            return {
+              address: obj.properties["Address"],
+              cd: obj.properties["CD#"],
+              evictionCategory: obj.properties["Category"],
+              date: obj.properties["Notice Date"],
+              city: obj.properties.City,
+              zip: obj.properties["Zip Code"],
+              rentOwed: obj.properties["Rent Owed"],
+              bedroom: obj.properties["Bedroom Count"],
+              noticeType: obj.properties["Notice Type"],
+              justCause: obj.properties["Just Cause"],
+            };
+          });
+
+          // console.log("filteredData", filteredData);
+
+          var evictionPoint: any = map.getSource("eviction-point");
+          evictionPoint.setData(e.features[0].geometry);
+
+          map.setLayoutProperty(
+            "points-selected-evictions-layer",
+            "visibility",
+            "visible"
+          );
+
+          setEvictionData(filteredData);
+        });
+
+        if (true) {
+          map.addLayer(
+            {
+              id: "citybound",
+              type: "line",
+              source: {
+                type: "geojson",
+                data: citybounds,
+              },
+              paint: {
+                "line-color": "#dddddd",
+                "line-opacity": 1,
+                "line-width": 1,
+              },
             },
-            // When active the map will receive updates to the device's location as it changes.
-            trackUserLocation: true,
-            // Draw an arrow next to the location dot to indicate which direction the device is heading.
-            showUserHeading: true,
-          })
-        );
+            "road-label-navigation"
+          );
+
+          map.addSource("citycouncildist", {
+            type: "geojson",
+            data: councildistricts,
+          });
+
+          map.addLayer(
+            {
+              id: "councildistrictslayer",
+              type: "line",
+              source: "citycouncildist",
+              paint: {
+                "line-color": "#7FE5D4",
+                "line-opacity": 1,
+                "line-width": 0.8,
+              },
+            },
+            "road-label-navigation"
+          );
+
+          map.addLayer(
+            {
+              id: "councildistrictsselectlayer",
+              type: "fill",
+              source: "citycouncildist",
+              paint: {
+                "fill-color": "#000000",
+                "fill-opacity": 0,
+              },
+            },
+            "road-label-navigation"
+          );
+
+          map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
+            var sourceofcouncildistselect: any = map.getSource(
+              "selected-council-dist"
+            );
+
+            var clickeddata = e.features[0].properties.district;
+
+            var councildistpolygonfound = councildistricts.features.find(
+              (eachDist: any) => eachDist.properties.district === clickeddata
+            );
+
+            if (sourceofcouncildistselect) {
+              if (councildistpolygonfound) {
+                sourceofcouncildistselect.setData(councildistpolygonfound);
+              }
+            }
+          });
+
+          map.addSource("selected-council-dist", {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: [],
+            },
+          });
+
+          map.addLayer(
+            {
+              id: "selected-council-dist-layer",
+              type: "fill",
+              source: "selected-council-dist",
+              paint: {
+                "fill-color": "#000000",
+                "fill-opacity": 0.3,
+              },
+            },
+            "road-label-navigation"
+          );
+        }
+
+        if (hasStartedControls === false) {
+          // Add zoom and rotation controls to the map.
+          map.addControl(new mapboxgl.NavigationControl());
+
+          // Add geolocate control to the map.
+          map.addControl(
+            new mapboxgl.GeolocateControl({
+              positionOptions: {
+                enableHighAccuracy: true,
+              },
+              // When active the map will receive updates to the device's location as it changes.
+              trackUserLocation: true,
+              // Draw an arrow next to the location dot to indicate which direction the device is heading.
+              showUserHeading: true,
+            })
+          );
+        }
+
+        checkHideOrShowTopRightGeocoder();
+
+        map.on("dragstart", (e) => {
+          uploadMapboxTrack({
+            mapname,
+            eventtype: "dragstart",
+            globallng: map.getCenter().lng,
+            globallat: map.getCenter().lat,
+            globalzoom: map.getZoom(),
+          });
+        });
+
+        map.on("dragend", (e) => {
+          uploadMapboxTrack({
+            mapname,
+            eventtype: "dragend",
+            globallng: map.getCenter().lng,
+            globallat: map.getCenter().lat,
+            globalzoom: map.getZoom(),
+          });
+        });
+
+        map.on("zoomstart", (e) => {
+          uploadMapboxTrack({
+            mapname,
+            eventtype: "dragstart",
+            globallng: map.getCenter().lng,
+            globallat: map.getCenter().lat,
+            globalzoom: map.getZoom(),
+          });
+        });
+      });
+
+      var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
+
+      if (getmapboxlogo) {
+        getmapboxlogo.remove();
       }
-
-      checkHideOrShowTopRightGeocoder();
-
-      map.on("dragstart", (e) => {
-        uploadMapboxTrack({
-          mapname,
-          eventtype: "dragstart",
-          globallng: map.getCenter().lng,
-          globallat: map.getCenter().lat,
-          globalzoom: map.getZoom(),
-        });
-      });
-
-      map.on("dragend", (e) => {
-        uploadMapboxTrack({
-          mapname,
-          eventtype: "dragend",
-          globallng: map.getCenter().lng,
-          globallat: map.getCenter().lat,
-          globalzoom: map.getZoom(),
-        });
-      });
-
-      map.on("zoomstart", (e) => {
-        uploadMapboxTrack({
-          mapname,
-          eventtype: "dragstart",
-          globallng: map.getCenter().lng,
-          globallat: map.getCenter().lat,
-          globalzoom: map.getZoom(),
-        });
-      });
-    });
-
-    var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
-
-    if (getmapboxlogo) {
-      getmapboxlogo.remove();
     }
-}}, [mapboxConfig]);
+  }, [mapboxConfig]);
 
   useEffect(() => {
     let arrayoffilterables: any = [];
