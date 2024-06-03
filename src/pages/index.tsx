@@ -1,3 +1,4 @@
+'use client';
 import type { NextPage } from "next";
 import Head from "next/head";
 import { computeclosestcoordsfromevent } from "../components/getclosestcoordsfromevent";
@@ -110,6 +111,7 @@ const Home: NextPage = () => {
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [evictionInfo, setEvictionInfo] = useState(0);
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
+  const [mapboxConfig, setMapboxConfig] = useState<{ mapboxToken: string; mapboxStyle: string } | null>(null);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
   var mapname = "Evictions_feb-dec23";
@@ -238,9 +240,31 @@ const Home: NextPage = () => {
     }
   }, [normalizeIntensity]);
 
+
   useEffect(() => {
-    mapboxgl.accessToken =
-      "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
+    const fetchMapboxConfig = async () => {
+      try {
+        const response = await fetch('/api/mapboxConfig');
+        const data = await response.json();
+        setMapboxConfig(data);
+      } catch (error) {
+        console.error('Error fetching Mapbox config:', error);
+      }
+    };
+
+    fetchMapboxConfig();
+  }, []);
+
+  useEffect(() => {
+    if (mapboxConfig && divRef.current) {
+      mapboxgl.accessToken = mapboxConfig.mapboxToken;
+    // const mapboxToken = process.env.MAPBOX_ACCESS_TOKEN;
+    // if (!mapboxToken) {
+    //   throw new Error("MAPBOX_ACCESS_TOKEN is not defined");
+    // }
+    // mapboxgl.accessToken = 
+
+    // "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
 
     const formulaForZoom = () => {
       if (typeof window != "undefined") {
@@ -262,8 +286,8 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-
-      style: "mapbox://styles/kennethmejia/cll1gnmuz005t01rgh4h873vd", // style URL (THIS IS STREET VIEW)
+      style: mapboxConfig.mapboxStyle,
+      // style: "mapbox://styles/kennethmejia/cll1gnmuz005t01rgh4h873vd", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -1010,7 +1034,7 @@ const Home: NextPage = () => {
     if (getmapboxlogo) {
       getmapboxlogo.remove();
     }
-  }, []);
+}}, [mapboxConfig]);
 
   useEffect(() => {
     let arrayoffilterables: any = [];
