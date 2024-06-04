@@ -19,6 +19,6 @@
       "~/*": ["./public/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/**/*.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/**/*.js", "src/**/*/*.js"],
   "exclude": ["node_modules"]
 }
