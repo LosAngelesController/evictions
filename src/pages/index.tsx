@@ -260,13 +260,6 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (mapboxConfig && divRef.current) {
       mapboxgl.accessToken = mapboxConfig.mapboxToken;
-      // const mapboxToken = process.env.MAPBOX_ACCESS_TOKEN;
-      // if (!mapboxToken) {
-      //   throw new Error("MAPBOX_ACCESS_TOKEN is not defined");
-      // }
-      // mapboxgl.accessToken =
-
-      // "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
 
       const formulaForZoom = () => {
         if (typeof window != "undefined") {
@@ -289,7 +282,6 @@ const Home: NextPage = () => {
       var mapparams: any = {
         container: divRef.current, // container ID
         style: mapboxConfig.mapboxStyle,
-        // style: "mapbox://styles/kennethmejia/cll1gnmuz005t01rgh4h873vd", // style URL (THIS IS STREET VIEW)
         center: [-118.41, 34], // starting position [lng, lat]
         zoom: formulaForZoom(), // starting zoom
       };
