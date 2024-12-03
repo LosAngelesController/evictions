@@ -41,7 +41,7 @@ const navigation: any = [
   },
   {
     name: "Table",
-    href: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIEy8NKu8hPKwlCccssQY-E-7xG5iruMpmTso1VDlAKRqGZdvpxs5gv6MWTkek7en9zBvErcZJDbZL/pubhtml",
+    href: "https://docs.google.com/spreadsheets/d/1oPMrPSi9Zod5wnhKi0cgmihtxBgP7TIgoMn3BakOdbE/edit?usp=sharing",
     target: "_blank",
   },
   {
@@ -161,7 +161,7 @@ function Nav() {
           <Disclosure.Panel className="md:hidden">
             <div className="space-y-1 px-2 pt-0 pb-3">
               <p className="text-[#41ffca] font-medium text-base pt-0 pb-1 px-3 block">
-                Eviction Notices Feb - Dec 2023
+                Eviction Notices Nov 2023 - Dec 2024
               </p>
               {navarraycurrent().map((item: newiteminterface) => (
                 <Disclosure.Button
