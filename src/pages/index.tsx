@@ -1023,6 +1023,21 @@ const Home: NextPage = () => {
             globalzoom: map.getZoom(),
           });
         });
+
+        map.on("zoomend", (e) => {
+          const zoom = map.getZoom();
+          if (zoom < 10) {
+            map.setZoom(10);
+          } else {
+            uploadMapboxTrack({
+              mapname,
+              eventtype: "zoomend",
+              globallng: map.getCenter().lng,
+              globallat: map.getCenter().lat,
+              globalzoom: zoom,
+            });
+          }
+        });
       });
 
       var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
