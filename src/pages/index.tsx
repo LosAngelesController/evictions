@@ -54,6 +54,7 @@ const filterableNotices: any = {
   "90 Day": 109,
   "120 Day": 333,
   "365 Day": 16,
+  "N/A": 446,
 };
 
 const filterableNoticesKeys = Object.keys(filterableNotices);
