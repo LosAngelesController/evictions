@@ -41,7 +41,7 @@ const navigation: any = [
   },
   {
     name: "Table",
-    href: "https://docs.google.com/spreadsheets/d/1oPMrPSi9Zod5wnhKi0cgmihtxBgP7TIgoMn3BakOdbE/edit?usp=sharing",
+    href: "https://docs.google.com/spreadsheets/d/1UwJJRp1KVXTd9BtooYQJDb4qVwEyPpEpa4O3Upoenok/edit?usp=sharing",
     target: "_blank",
   },
   {
@@ -160,9 +160,9 @@ function Nav() {
 
           <Disclosure.Panel className="md:hidden">
             <div className="space-y-1 px-2 pt-0 pb-3">
-              <p className="text-[#41ffca] font-medium text-base pt-0 pb-1 px-3 block">
-                Eviction Notices Feb 2023 - Nov 2024
-              </p>
+              {/* <p className="text-[#41ffca] font-medium text-base pt-0 pb-1 px-3 block">
+                Eviction Notices Feb 2023 - Apr 2025
+              </p> */}
               {navarraycurrent().map((item: newiteminterface) => (
                 <Disclosure.Button
                   key={item.name}
