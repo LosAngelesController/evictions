@@ -1180,7 +1180,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>City of LA Eviction Notices (Feb 2023 - Nov 2024) | Map</title>
+          <title>City of LA Eviction Notices (Feb 2023 - Apr 2025) | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1188,12 +1188,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Eviction Notices (Feb 2023 - Nov 2024) | Map"
+            content="City of LA Eviction Notices (Feb 2023 - Apr 2025) | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Eviction Notices (Feb 2023 - Nov 2024)"
+            content="City of LA Eviction Notices (Feb 2023 - Apr 2025)"
           ></meta>
           <meta
             name="twitter:image"
@@ -1202,7 +1202,7 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="City of LA Eviction Notices (Feb 2023 - Nov 2024)"
+            content="City of LA Eviction Notices (Feb 2023 - Apr 2025)"
           />
 
           <meta
@@ -1212,11 +1212,11 @@ const Home: NextPage = () => {
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Eviction Notices (Feb 2023 - Nov 2024) | Map"
+            content="City of LA Eviction Notices (Feb 2023 - Apr 2025) | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Eviction Notices (Feb 2023 - Nov 2024)"
+            content="City of LA Eviction Notices (Feb 2023 - Apr 2025)"
           />
           <meta
             property="og:image"
