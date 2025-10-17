@@ -538,9 +538,9 @@ const Home: NextPage = () => {
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Just Cause"] &&
-                          eachCase.properties["Just Cause"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Just Cause"]}</span> `
+                          eachCase.properties?.["Cause"] &&
+                          eachCase.properties["Cause"] != "UNKNOWN"
+                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Cause"]}</span> `
                             : ""
                         }
                         <br />
