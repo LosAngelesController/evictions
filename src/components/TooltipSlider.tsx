@@ -19,7 +19,7 @@ const HandleTooltip = (props: {
     ...restProps
   } = props;
 
-  const tooltipRef = React.useRef<any>();
+  const tooltipRef = React.useRef<any>(null);
   const rafRef = React.useRef<number | null>(null);
 
   function cancelKeepAlign() {

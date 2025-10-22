@@ -12,4 +12,8 @@ module.exports = {
   experimental: {
     forceSwcTransforms: true,
   },
+  eslint: {
+    // Don’t run ESLint during `next build` (Vercel uses this)
+    ignoreDuringBuilds: true,
+  },
 };

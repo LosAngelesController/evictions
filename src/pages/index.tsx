@@ -215,50 +215,58 @@ const Home: NextPage = () => {
 
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
-const closeInfoBox = () => {
-  const map = mapref.current;
-  if (!map) {
-    console.warn("closeInfoBox called before map is ready");
+  const closeInfoBox = () => {
+    const map = mapref.current;
+    if (!map) {
+      console.warn("closeInfoBox called before map is ready");
+      setEvictionInfoOpen(false);
+      return;
+    }
+
+    // Hide the selection marker if the layer exists
+    if (map.getLayer("points-selected-evictions-layer")) {
+      map.setLayoutProperty(
+        "points-selected-evictions-layer",
+        "visibility",
+        "none"
+      );
+    }
+
+    // Clear the temp point source if it exists
+    const src = map.getSource("eviction-point") as
+      | mapboxgl.GeoJSONSource
+      | undefined;
+    if (src && "setData" in src) {
+      src.setData({ type: "FeatureCollection", features: [] });
+    }
+
     setEvictionInfoOpen(false);
-    return;
-  }
 
-  // Hide the selection marker if the layer exists
-  if (map.getLayer("points-selected-evictions-layer")) {
-    map.setLayoutProperty("points-selected-evictions-layer", "visibility", "none");
-  }
+    // Any extra cleanup you had
+    okaydeletepoints.current?.();
+  };
 
-  // Clear the temp point source if it exists
-  const src = map.getSource("eviction-point") as mapboxgl.GeoJSONSource | undefined;
-  if (src && "setData" in src) {
-    src.setData({ type: "FeatureCollection", features: [] });
-  }
+  const recomputeIntensity = () => {
+    const map = mapref.current;
+    if (!map) return;
 
-  setEvictionInfoOpen(false);
+    const levels: any = normalizeIntensity
+      ? ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4]
+      : ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
 
-  // Any extra cleanup you had
-  okaydeletepoints.current?.();
-};
+    if (map.getLayer("evictions-feb23-apr25")) {
+      map.setPaintProperty(
+        "evictions-feb23-apr25",
+        "heatmap-intensity",
+        levels
+      );
+    }
+  };
 
-
-const recomputeIntensity = () => {
-  const map = mapref.current;
-  if (!map) return;
-
-  const levels: any = normalizeIntensity
-    ? ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4]
-    : ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
-
-  if (map.getLayer("evictions-feb23-apr25")) {
-    map.setPaintProperty("evictions-feb23-apr25", "heatmap-intensity", levels);
-  }
-};
-
-useEffect(() => {
-  if (!doneloadingmap) return;
-  recomputeIntensity();
-}, [normalizeIntensity, doneloadingmap]); // ✅ ensure it runs after map load
-
+  useEffect(() => {
+    if (!doneloadingmap) return;
+    recomputeIntensity();
+  }, [normalizeIntensity, doneloadingmap]); // ✅ ensure it runs after map load
 
   useEffect(() => {
     const fetchMapboxConfig = async () => {
@@ -1056,47 +1064,45 @@ useEffect(() => {
     }
   }, [mapboxConfig]);
 
-useEffect(() => {
-  const map = mapref.current;
-  if (!map || !doneloadingmap) return;
-  if (!map.getLayer("evictions-feb23-apr25")) return;
+  useEffect(() => {
+    const map = mapref.current;
+    if (!map || !doneloadingmap) return;
+    if (!map.getLayer("evictions-feb23-apr25")) return;
 
-  const filter = [
-    "all",
-    ["match", ["to-number", ["get", "CD#"]], filteredDistricts, true, false],
-    [
-      "match",
-      ["downcase", ["to-string", ["get", "Category"]]],
-      filteredCategories.map(s => s.toLowerCase()),
-      true,
-      false,
-    ],
-    [
-      "match",
-      ["downcase", ["to-string", ["get", "Notice Type"]]],
-      filteredNotices.map(s => s.toLowerCase()),
-      true,
-      false,
-    ],
-  ] as any;
+    const filter = [
+      "all",
+      ["match", ["to-number", ["get", "CD#"]], filteredDistricts, true, false],
+      [
+        "match",
+        ["downcase", ["to-string", ["get", "Category"]]],
+        filteredCategories.map((s) => s.toLowerCase()),
+        true,
+        false,
+      ],
+      [
+        "match",
+        ["downcase", ["to-string", ["get", "Notice Type"]]],
+        filteredNotices.map((s) => s.toLowerCase()),
+        true,
+        false,
+      ],
+    ] as any;
 
-  map.setFilter("evictions-feb23-apr25", filter);
-}, [filteredCategories, filteredDistricts, filteredNotices, doneloadingmap]); // ✅ include doneloadingmap
+    map.setFilter("evictions-feb23-apr25", filter);
+  }, [filteredCategories, filteredDistricts, filteredNotices, doneloadingmap]); // ✅ include doneloadingmap
 
+  useEffect(() => {
+    const map = mapref.current;
+    if (!map || !doneloadingmap) return;
+    if (!map.getLayer("evictions-apr-2025-zipcodes")) return;
 
-useEffect(() => {
-  const map = mapref.current;
-  if (!map || !doneloadingmap) return;
-  if (!map.getLayer("evictions-apr-2025-zipcodes")) return;
+    const filter = [
+      "all",
+      ["match", ["to-number", ["get", "Zip"]], filteredZipCodes, true, false],
+    ] as any;
 
-  const filter = [
-    "all",
-    ["match", ["to-number", ["get", "Zip"]], filteredZipCodes, true, false],
-  ] as any;
-
-  map.setFilter("evictions-apr-2025-zipcodes", filter);
-}, [filteredZipCodes, doneloadingmap]); // ✅ include doneloadingmap
-
+    map.setFilter("evictions-apr-2025-zipcodes", filter);
+  }, [filteredZipCodes, doneloadingmap]); // ✅ include doneloadingmap
 
   const onSelect = () => {
     if (selectedfilteropened === "notice") {
