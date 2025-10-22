@@ -107,8 +107,30 @@ const Home: NextPage = () => {
     filterableZipCodeKeys.map((key) => Number(key))
   );
 
-  const [filterpanelopened, setfilterpanelopened] =
-    useState(shouldfilteropeninit);
+  // SSR-safe default (server + first client render both "false")
+  const [filterpanelopened, setfilterpanelopened] = useState<boolean>(false);
+
+  // After hydration, decide if it should be open (saved pref or viewport)
+  useEffect(() => {
+    const saved =
+      typeof window !== "undefined"
+        ? localStorage.getItem("filterPanelOpen")
+        : null;
+
+    const initial =
+      saved != null
+        ? saved === "1"
+        : typeof window !== "undefined" &&
+          window.matchMedia("(min-width: 640px)").matches;
+
+    setfilterpanelopened(initial);
+  }, []);
+
+  // (optional) persist choice
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("filterPanelOpen", filterpanelopened ? "1" : "0");
+  }, [filterpanelopened]);
 
   let [evictionData, setEvictionData]: any = useState(null);
   let [evictionInfoOpen, setEvictionInfoOpen] = useState(false);
@@ -193,59 +215,50 @@ const Home: NextPage = () => {
 
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
-  const closeInfoBox = () => {
-    // console.log("mapref.current", mapref.current);
-    // console.log(
-    //   "mapref.current.getSource eviction-point",
-    //   mapref.current.getSource("eviction-point")
-    // );
-
-    mapref.current.setLayoutProperty(
-      "points-selected-evictions-layer",
-      "visibility",
-      "none"
-    );
-
+const closeInfoBox = () => {
+  const map = mapref.current;
+  if (!map) {
+    console.warn("closeInfoBox called before map is ready");
     setEvictionInfoOpen(false);
-    if (mapref) {
-      if (mapref.current) {
-        var evictionPoint: any = mapref.current.getSource("eviction-point");
-        evictionPoint.setData(null);
-      } else {
-        console.log("no current ref");
-      }
-    } else {
-      console.log("no ref");
-    }
+    return;
+  }
 
-    if (okaydeletepoints.current) {
-      okaydeletepoints.current();
-    }
-  };
+  // Hide the selection marker if the layer exists
+  if (map.getLayer("points-selected-evictions-layer")) {
+    map.setLayoutProperty("points-selected-evictions-layer", "visibility", "none");
+  }
 
-  const recomputeIntensity = () => {
-    let levels = ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
+  // Clear the temp point source if it exists
+  const src = map.getSource("eviction-point") as mapboxgl.GeoJSONSource | undefined;
+  if (src && "setData" in src) {
+    src.setData({ type: "FeatureCollection", features: [] });
+  }
 
-    if (normalizeIntensity === true) {
-      levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
-    }
+  setEvictionInfoOpen(false);
 
-    var layer = mapref.current.getLayer("evictions-feb23-apr25");
+  // Any extra cleanup you had
+  okaydeletepoints.current?.();
+};
 
-    if (layer) {
-      mapref.current.setPaintProperty(
-        "evictions-feb23-apr25",
-        "heatmap-intensity",
-        levels
-      );
-    }
-  };
 
-  useEffect(() => {
-    if (mapref.current) {
-      recomputeIntensity();
-    }
-  }, [normalizeIntensity]);
+const recomputeIntensity = () => {
+  const map = mapref.current;
+  if (!map) return;
+
+  const levels: any = normalizeIntensity
+    ? ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4]
+    : ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
+
+  if (map.getLayer("evictions-feb23-apr25")) {
+    map.setPaintProperty("evictions-feb23-apr25", "heatmap-intensity", levels);
+  }
+};
+
+useEffect(() => {
+  if (!doneloadingmap) return;
+  recomputeIntensity();
+}, [normalizeIntensity, doneloadingmap]); // ✅ ensure it runs after map load
+
 
   useEffect(() => {
     const fetchMapboxConfig = async () => {
@@ -283,14 +296,13 @@ const Home: NextPage = () => {
       const zoomParam = urlParams.get("zoom");
       const debugParam = urlParams.get("debug");
 
-      var mapparams: any = {
-        container: divRef.current, // container ID
+      const map = new mapboxgl.Map({
+        container: divRef.current!,
         style: mapboxConfig.mapboxStyle,
-        center: [-118.41, 34], // starting position [lng, lat]
-        zoom: formulaForZoom(), // starting zoom
-      };
+        center: [-118.41, 34],
+        zoom: 11,
+      });
 
-      const map = new mapboxgl.Map(mapparams);
       mapref.current = map;
 
       var rtldone = false;
@@ -361,24 +373,18 @@ const Home: NextPage = () => {
 
         const geocoder: any = new MapboxGeocoder({
           accessToken: mapboxgl.accessToken,
-          mapboxgl: map,
+          mapboxgl,
           proximity: {
             longitude: -118.41,
             latitude: 34,
           },
-          marker: true,
-        });
-
-        var colormarker = new mapboxgl.Marker({
-          color: "#41ffca",
+          marker: new mapboxgl.Marker({ color: "#41ffca" }),
         });
 
         const geocoderopt: any = {
           accessToken: mapboxgl.accessToken,
-          mapboxgl: mapboxgl,
-          marker: {
-            color: "#41ffca",
-          },
+          mapboxgl,
+          marker: new mapboxgl.Marker({ color: "#41ffca" }),
         };
 
         const geocoder2 = new MapboxGeocoder(geocoderopt);
@@ -703,7 +709,7 @@ const Home: NextPage = () => {
                         ${
                           eachCase.properties?.["Just Cause"] &&
                           eachCase.properties["Just Cause"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Just Cause"]}</span> `
+                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Cause"]}</span> `
                             : ""
                         }
                         <br />
@@ -868,7 +874,7 @@ const Home: NextPage = () => {
               rentOwed: obj.properties["Rent Owed"],
               bedroom: obj.properties["Bedroom"],
               noticeType: obj.properties["Notice Type"],
-              justCause: obj.properties["Just Cause"],
+              cause: obj.properties["Cause"],
             };
           });
 
@@ -1050,71 +1056,47 @@ const Home: NextPage = () => {
     }
   }, [mapboxConfig]);
 
-  useEffect(() => {
-    let arrayoffilterables: any = [];
+useEffect(() => {
+  const map = mapref.current;
+  if (!map || !doneloadingmap) return;
+  if (!map.getLayer("evictions-feb23-apr25")) return;
 
-    arrayoffilterables.push([
+  const filter = [
+    "all",
+    ["match", ["to-number", ["get", "CD#"]], filteredDistricts, true, false],
+    [
       "match",
-      ["get", "CD#"],
-      filteredDistricts,
+      ["downcase", ["to-string", ["get", "Category"]]],
+      filteredCategories.map(s => s.toLowerCase()),
       true,
       false,
-    ]);
-
-    arrayoffilterables.push([
+    ],
+    [
       "match",
-      ["get", "Category"],
-      filteredCategories.map((category) => String(category)),
+      ["downcase", ["to-string", ["get", "Notice Type"]]],
+      filteredNotices.map(s => s.toLowerCase()),
       true,
       false,
-    ]);
+    ],
+  ] as any;
 
-    arrayoffilterables.push([
-      "match",
-      ["get", "Notice Type"],
-      filteredNotices.map((noticeType) => String(noticeType)),
-      true,
-      false,
-    ]);
+  map.setFilter("evictions-feb23-apr25", filter);
+}, [filteredCategories, filteredDistricts, filteredNotices, doneloadingmap]); // ✅ include doneloadingmap
 
-    if (mapref.current) {
-      if (doneloadingmap) {
-        const filterinput = JSON.parse(
-          JSON.stringify(["all", ...arrayoffilterables])
-        );
 
-        if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions-feb23-apr25", filterinput);
-        }
-      }
-    }
-  }, [filteredCategories, filteredDistricts, filteredNotices]);
+useEffect(() => {
+  const map = mapref.current;
+  if (!map || !doneloadingmap) return;
+  if (!map.getLayer("evictions-apr-2025-zipcodes")) return;
 
-  useEffect(() => {
-    let arrayoffilterables: any = [];
+  const filter = [
+    "all",
+    ["match", ["to-number", ["get", "Zip"]], filteredZipCodes, true, false],
+  ] as any;
 
-    arrayoffilterables.push([
-      "match",
-      ["get", "Zip"],
-      filteredZipCodes,
-      true,
-      false,
-    ]);
+  map.setFilter("evictions-apr-2025-zipcodes", filter);
+}, [filteredZipCodes, doneloadingmap]); // ✅ include doneloadingmap
 
-    if (mapref.current) {
-      if (doneloadingmap) {
-        const filterinput = JSON.parse(
-          JSON.stringify(["all", ...arrayoffilterables])
-        );
-
-        // console.log(filterinput);
-
-        if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions-apr-2025-zipcodes", filterinput);
-        }
-      }
-    }
-  }, [filteredZipCodes]);
 
   const onSelect = () => {
     if (selectedfilteropened === "notice") {
@@ -1386,31 +1368,24 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredDistricts.map((district) =>
-                              String(district)
-                            )}
-                            onChange={setFilteredDistrictPre}
+                            value={filteredDistricts.map(String)}
+                            onChange={setFilteredDistrictPre} // (input: string[]) -> you convert to numbers inside
                           >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableDistricts).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
+                            <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+                              {Object.entries(
+                                filterableDistricts as Record<string, number>
+                              ).map(([k, v]) => (
+                                <Checkbox
+                                  key={k}
+                                  value={k} // Mantine group values are strings
+                                  label={
+                                    <span className="text-nowrap text-xs">
+                                      <span className="text-white">{k}</span>{" "}
+                                      <span>{v}</span>
+                                    </span>
+                                  }
+                                />
+                              ))}
                             </div>
                           </Checkbox.Group>
                         </div>
@@ -1441,26 +1416,26 @@ const Home: NextPage = () => {
                             )}
                             onChange={setFilteredCategoriesPre}
                           >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableCategories).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
+                            <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+                              {Object.entries(
+                                filterableCategories as Record<
+                                  string,
+                                  string | number | React.ReactNode
+                                >
+                              ).map((eachEntry) => (
+                                <Checkbox
+                                  value={eachEntry[0]}
+                                  label={
+                                    <span className="text-nowrap text-xs">
+                                      <span className="text-white">
+                                        {eachEntry[0]}
+                                      </span>{" "}
+                                      <span>{eachEntry[1]}</span>
+                                    </span>
+                                  }
+                                  key={eachEntry[0]}
+                                />
+                              ))}
                             </div>
                           </Checkbox.Group>
                         </div>
@@ -1491,26 +1466,26 @@ const Home: NextPage = () => {
                             )}
                             onChange={setFilteredNoticesPre}
                           >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableNotices).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
+                            <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+                              {Object.entries(
+                                filterableNotices as Record<
+                                  string,
+                                  string | number | React.ReactNode
+                                >
+                              ).map((eachEntry) => (
+                                <Checkbox
+                                  value={eachEntry[0]}
+                                  label={
+                                    <span className="text-nowrap text-xs">
+                                      <span className="text-white">
+                                        {eachEntry[0]}
+                                      </span>{" "}
+                                      <span>{eachEntry[1]}</span>
+                                    </span>
+                                  }
+                                  key={eachEntry[0]}
+                                />
+                              ))}
                             </div>
                           </Checkbox.Group>
                         </div>
@@ -1539,23 +1514,26 @@ const Home: NextPage = () => {
                             value={filteredZipCodes.map((zip) => String(zip))}
                             onChange={setFilteredZipCodesPre}
                           >
-                            <div className={`grid grid-cols-3 gap-x-4 `}>
-                              {Object.entries(filterableZipCodes).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
+                            <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+                              {Object.entries(
+                                filterableZipCodes as Record<
+                                  string,
+                                  string | number | React.ReactNode
+                                >
+                              ).map((eachEntry) => (
+                                <Checkbox
+                                  value={eachEntry[0]}
+                                  label={
+                                    <span className="text-nowrap text-xs">
+                                      <span className="text-white">
+                                        {eachEntry[0]}
+                                      </span>{" "}
+                                      <span>{eachEntry[1]}</span>
+                                    </span>
+                                  }
+                                  key={eachEntry[0]}
+                                />
+                              ))}
                             </div>
                           </Checkbox.Group>
                         </div>
@@ -1614,25 +1592,19 @@ const Home: NextPage = () => {
 
         <div ref={divRef} style={{}} className="map-container w-full h-full " />
 
-        {(typeof window !== "undefined" ? window.innerWidth >= 640 : false) && (
-          <>
-            <div
-              className={`absolute md:mx-auto z-9 bottom-2 left-1 md:left-1/2 md:transform md:-translate-x-1/2`}
-            >
-              <a
-                href="https://controller.lacity.gov/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src="https://controller.lacity.gov/images/KennethMejia-logo-white-elect.png"
-                  className="h-9 md:h-10 z-40"
-                  alt="Kenneth Mejia LA City Controller Logo"
-                />
-              </a>
-            </div>
-          </>
-        )}
+        <div className="absolute bottom-2 left-1 z-[9] hidden sm:block md:mx-auto md:left-1/2 md:-translate-x-1/2 md:transform">
+          <a
+            href="https://controller.lacity.gov/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img
+              src="https://controller.lacity.gov/images/KennethMejia-logo-white-elect.png"
+              className="z-40 h-9 md:h-10"
+              alt="Kenneth Mejia LA City Controller Logo"
+            />
+          </a>
+        </div>
       </MantineProvider>
     </div>
   );
