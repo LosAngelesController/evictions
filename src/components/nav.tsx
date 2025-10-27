@@ -41,7 +41,7 @@ const navigation: any = [
   },
   {
     name: "Table",
-    href: "https://docs.google.com/spreadsheets/d/1UwJJRp1KVXTd9BtooYQJDb4qVwEyPpEpa4O3Upoenok/edit?usp=sharing",
+    href: "https://docs.google.com/spreadsheets/d/1uz8LwyxVgoHd3SRKLydPIO3BMxaDXqV7uqYEC_j-too/edit?usp=sharing",
     target: "_blank",
   },
   {
