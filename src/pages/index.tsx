@@ -18,69 +18,70 @@ import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
 const filterableDistricts: any = {
-  1: 19806,
-  2: 12074,
-  3: 20172,
-  4: 13980,
-  5: 15440,
-  6: 11045,
-  7: 3958,
-  8: 7542,
-  9: 7349,
-  10: 18776,
-  11: 14088,
-  12: 7135,
-  13: 24463,
-  14: 29170,
-  15: 5903,
+  1: 22800,
+  2: 14160,
+  3: 23401,
+  4: 15912,
+  5: 17819,
+  6: 12467,
+  7: 4484,
+  8: 8770,
+  9: 8792,
+  10: 22439,
+  11: 16494,
+  12: 8433,
+  13: 28372,
+  14: 34441,
+  15: 6815,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
 
 const filterableCategories: any = {
-  "At-Fault": 208667,
-  "No-Fault": 2080,
-  Unknown: 154,
+  "At-Fault": 242861,
+  "No-Fault": 2559,
+  Unknown: 165,
 };
 
 const filterableCategoriesKeys = Object.keys(filterableCategories);
 
 const filterableNotices: any = {
-  "3 Day": 187995,
-  "5 Day": 128,
-  "10 Day": 2837,
-  "15 Day": 142,
-  "30 Day": 17457,
-  "60 Day": 1523,
-  "90 Day": 109,
-  "120 Day": 491,
+  "3 Day": 218281,
+  "5 Day": 184,
+  "10 Day": 3313,
+  "15 Day": 247,
+  "30 Day": 20798,
+  "60 Day": 1888,
+  "90 Day": 191,
+  "120 Day": 573,
+  "180 Day": 24,
   "365 Day": 19,
-  "N/A": 68,
+  "N/A": 81,
 };
 
 const filterableNoticesKeys = Object.keys(filterableNotices);
 
 const filterableZipCodes: any = {
-  90028: 12651,
-  90012: 10053,
-  90017: 9040,
-  91367: 8620,
-  90015: 8565,
-  90036: 8163,
-  90005: 6191,
-  90014: 5030,
-  91601: 4772,
-  90020: 4500,
-  90057: 4077,
-  90004: 4042,
-  90013: 3608,
-  90045: 3557,
-  91364: 3207,
-  91405: 3127,
-  91303: 3074,
-  90038: 3067,
-  90007: 2986,
-  90006: 2823,
+  90028: 14584,
+  90012: 11673,
+  90017: 10379,
+  90015: 10302,
+  91367: 9975,
+  90036: 9269,
+  90005: 7406,
+  90014: 5723,
+  91601: 5633,
+  90020: 5288,
+  90057: 4744,
+  90004: 4705,
+  90013: 4319,
+  90045: 4216,
+  91303: 3779,
+  91364: 3729,
+  91405: 3616,
+  90038: 3605,
+  90006: 3342,
+  90007: 3293,
 };
 
 const filterableZipCodeKeys = Object.keys(filterableZipCodes);
@@ -143,7 +144,7 @@ const Home: NextPage = () => {
   } | null>(null);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "Evictions_feb23-apr25";
+  var mapname = "Evictions_feb23-sep25";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
@@ -254,9 +255,9 @@ const Home: NextPage = () => {
       ? ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4]
       : ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
 
-    if (map.getLayer("evictions-feb23-apr25")) {
+    if (map.getLayer("evictions-feb23-sep25")) {
       map.setPaintProperty(
-        "evictions-feb23-apr25",
+        "evictions-feb23-sep25",
         "heatmap-intensity",
         levels
       );
@@ -502,7 +503,7 @@ const Home: NextPage = () => {
           closeOnClick: false,
         });
 
-        map.on("mouseover", "evictions-feb23-apr25", (e: any) => {
+        map.on("mouseover", "evictions-feb23-sep25", (e: any) => {
           if (e.features) {
             map.getCanvas().style.cursor = "pointer";
             const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -552,8 +553,7 @@ const Home: NextPage = () => {
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Cause"] &&
-                          eachCase.properties["Cause"] != "UNKNOWN"
+                          eachCase.properties?.["Cause"]
                             ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Cause"]}</span> `
                             : ""
                         }
@@ -577,8 +577,8 @@ const Home: NextPage = () => {
                         }
                         ${" "}
                         ${
-                          eachCase.properties?.["Zip Code"]
-                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["Zip Code"]}</span>`
+                          eachCase.properties?.["Zip"]
+                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["Zip"]}</span>`
                             : ""
                         }
                         <br />
@@ -639,7 +639,7 @@ const Home: NextPage = () => {
           }
         });
 
-        map.on("mouseleave", "evictions-feb23-apr25", () => {
+        map.on("mouseleave", "evictions-feb23-sep25", () => {
           //check if the url query string "stopmouseleave" is true
           //if it is, then don't do anything
           //if it is not, then do the following
@@ -658,14 +658,14 @@ const Home: NextPage = () => {
           },
         });
 
-        map.on("mouseleave", "evictions-apr-2025-zipcodes", () => {
+        map.on("mouseleave", "evictions-sep-2025-zipcodes", () => {
           if (urlParams.get("stopmouseleave") === null) {
             map.getCanvas().style.cursor = "";
             popup.remove();
           }
         });
 
-        map.on("mouseover", "evictions-apr-2025-zipcodes", (e: any) => {
+        map.on("mouseover", "evictions-sep-2025-zipcodes", (e: any) => {
           if (e.features) {
             map.getCanvas().style.cursor = "pointer";
             const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -715,8 +715,7 @@ const Home: NextPage = () => {
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Just Cause"] &&
-                          eachCase.properties["Just Cause"] != "UNKNOWN"
+                          eachCase.properties?.["Cause"]
                             ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["Cause"]}</span> `
                             : ""
                         }
@@ -832,7 +831,7 @@ const Home: NextPage = () => {
           }
         });
 
-        map.on("mousedown", "evictions-feb23-apr25", (e: any) => {
+        map.on("mousedown", "evictions-feb23-sep25", (e: any) => {
           setEvictionInfo(0);
           setInfoBoxLength(1);
           setEvictionInfoOpen(true);
@@ -844,7 +843,7 @@ const Home: NextPage = () => {
               evictionCategory: obj.properties["Category"],
               date: obj.properties["Notice Date"],
               city: obj.properties.City,
-              zip: obj.properties["Zip Code"],
+              zip: obj.properties["Zip"],
               rentOwed: obj.properties["Rent Owed"],
               bedroom: obj.properties["Bedroom"],
               noticeType: obj.properties["Notice Type"],
@@ -866,7 +865,7 @@ const Home: NextPage = () => {
           setEvictionData(filteredData);
         });
 
-        map.on("mousedown", "evictions-apr-2025-zipcodes", (e: any) => {
+        map.on("mousedown", "evictions-sep-2025-zipcodes", (e: any) => {
           setEvictionInfo(0);
           setInfoBoxLength(1);
           setEvictionInfoOpen(true);
@@ -878,7 +877,7 @@ const Home: NextPage = () => {
               evictionCategory: obj.properties["Category"],
               date: obj.properties["Notice Date"],
               city: obj.properties.City,
-              zip: obj.properties["Zip Code"],
+              zip: obj.properties["Zip"],
               rentOwed: obj.properties["Rent Owed"],
               bedroom: obj.properties["Bedroom"],
               noticeType: obj.properties["Notice Type"],
@@ -1067,7 +1066,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     const map = mapref.current;
     if (!map || !doneloadingmap) return;
-    if (!map.getLayer("evictions-feb23-apr25")) return;
+    if (!map.getLayer("evictions-feb23-sep25")) return;
 
     const filter = [
       "all",
@@ -1088,20 +1087,20 @@ const Home: NextPage = () => {
       ],
     ] as any;
 
-    map.setFilter("evictions-feb23-apr25", filter);
+    map.setFilter("evictions-feb23-sep25", filter);
   }, [filteredCategories, filteredDistricts, filteredNotices, doneloadingmap]); // ✅ include doneloadingmap
 
   useEffect(() => {
     const map = mapref.current;
     if (!map || !doneloadingmap) return;
-    if (!map.getLayer("evictions-apr-2025-zipcodes")) return;
+    if (!map.getLayer("evictions-sep-2025-zipcodes")) return;
 
     const filter = [
       "all",
       ["match", ["to-number", ["get", "Zip"]], filteredZipCodes, true, false],
     ] as any;
 
-    map.setFilter("evictions-apr-2025-zipcodes", filter);
+    map.setFilter("evictions-sep-2025-zipcodes", filter);
   }, [filteredZipCodes, doneloadingmap]); // ✅ include doneloadingmap
 
   const onSelect = () => {
@@ -1176,12 +1175,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Eviction Notices (Feb 2023 - Apr 2025) | Map"
+            content="City of LA Eviction Notices (Jan 2023 - Sep 2025) | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Eviction Notices (Feb 2023 - Apr 2025)"
+            content="City of LA Eviction Notices (Jan 2023 - Sep 2025)"
           ></meta>
           <meta
             name="twitter:image"
@@ -1190,7 +1189,7 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="City of LA Eviction Notices (Feb 2023 - Apr 2025)"
+            content="City of LA Eviction Notices (Jan 2023 - Sep 2025)"
           />
 
           <meta
@@ -1200,11 +1199,11 @@ const Home: NextPage = () => {
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Eviction Notices (Feb 2023 - Apr 2025) | Map"
+            content="City of LA Eviction Notices (Jan 2023 - Sep 2025) | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Eviction Notices (Feb 2023 - Apr 2025)"
+            content="City of LA Eviction Notices (Jan 2023 - Sep 2025)"
           />
           <meta
             property="og:image"
