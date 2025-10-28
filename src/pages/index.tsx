@@ -62,7 +62,7 @@ const filterableNotices: any = {
 const filterableNoticesKeys = Object.keys(filterableNotices);
 
 const filterableZipCodes: any = {
-  90028: 14584,
+  90028: 14585,
   90012: 11673,
   90017: 10379,
   90015: 10302,
