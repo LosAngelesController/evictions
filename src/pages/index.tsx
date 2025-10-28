@@ -1175,12 +1175,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Eviction Notices (Jan 2023 - Sep 2025) | Map"
+            content="City of LA Eviction Notices (Feb 2023 - Sep 2025) | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Eviction Notices (Jan 2023 - Sep 2025)"
+            content="City of LA Eviction Notices (Feb 2023 - Sep 2025)"
           ></meta>
           <meta
             name="twitter:image"
@@ -1189,7 +1189,7 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="City of LA Eviction Notices (Jan 2023 - Sep 2025)"
+            content="City of LA Eviction Notices (Feb 2023 - Sep 2025)"
           />
 
           <meta
@@ -1199,11 +1199,11 @@ const Home: NextPage = () => {
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Eviction Notices (Jan 2023 - Sep 2025) | Map"
+            content="City of LA Eviction Notices (Feb 2023 - Sep 2025) | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Eviction Notices (Jan 2023 - Sep 2025)"
+            content="City of LA Eviction Notices (Feb 2023 - Sep 2025)"
           />
           <meta
             property="og:image"
